@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ProcessVisit | Process Excellent Hub</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        header {
+            background: #17212b;
+            color: white;
+            padding: 25px 40px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            color: #cbd5e1;
+        }
+
+        nav {
+            background: #243447;
+            padding: 12px 40px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+        .hero {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .hero h2 {
+            margin-top: 0;
+            font-size: 32px;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #64748b;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 20px;
+            background: #17212b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>PROCESS EXCELLENT HUB</h1>
+    <p>Process Excellence Management Platform</p>
+</header>
+
+<nav>
+    <a href="../index.html">HOME</a>
+    <a href="#">PROJECTS</a>
+    <a href="#">KPI CENTER</a>
+    <a href="#">ACTION CENTER</a>
+</nav>
+
+<main>
+
+    <section class="hero">
+        <h2>ProcessVisit</h2>
+
+        <p>
+            Process findings, field observations, root cause analysis
+            and improvement actions.
+        </p>
+    </section>
+
+    <section class="cards">
+
+        <div class="card" onclick="window.location.href='Findings/index.html';" style="cursor:pointer;">
+            <h3>Findings</h3>
+            <p>
+                Process observations and field findings will be managed here.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Root Causes</h3>
+            <p>
+                Root cause analysis and process problem definitions.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Actions</h3>
+            <p>
+                Improvement actions, responsibilities and status tracking.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Documents</h3>
+            <p>
+                Related reports, images and technical documents.
+            </p>
+        </div>
+
+    </section>
+
+    <a class="back" href="../index.html" onclick="window.location.href='../index.html'; return false;"> 
+        ← Back to HOME
+    </a>
+
+</main>
+
+</body>
+</html>
