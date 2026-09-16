@@ -85,6 +85,12 @@
             border-radius: 8px;
             text-decoration: none;
             font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #243447;
         }
 
         .table-container {
@@ -128,6 +134,21 @@
             font-weight: bold;
         }
 
+        .status-open {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .status-closed {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .status-progress {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
         .back {
             display: inline-block;
             margin-top: 30px;
@@ -138,12 +159,103 @@
             border-radius: 8px;
         }
 
+        /* FORM */
+
+        .form-container {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+
+        .form-container h3 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #475569;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .cancel-button {
+            background: #e2e8f0;
+            color: #334155;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
         @media (max-width: 700px) {
 
             .toolbar {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
             }
 
         }
@@ -153,6 +265,7 @@
 </head>
 
 <body>
+
 
 <header>
 
@@ -178,6 +291,7 @@
 
 <main>
 
+
     <section class="hero">
 
         <h2>ProcessVisit – Findings</h2>
@@ -190,16 +304,172 @@
     </section>
 
 
+    <!-- NEW FINDING FORM -->
+
+    <section class="form-container" id="findingForm">
+
+        <h3>New Finding</h3>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Date</label>
+
+                <input type="date" id="findingDate">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Area / Equipment</label>
+
+                <input
+                    type="text"
+                    id="findingArea"
+                    placeholder="e.g. Raw Mill, Kiln, Cooler">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Process</label>
+
+                <select id="findingProcess">
+
+                    <option value="">Select Process</option>
+
+                    <option>Raw Material Preparation</option>
+
+                    <option>Raw Mill</option>
+
+                    <option>Pyroprocess</option>
+
+                    <option>Kiln</option>
+
+                    <option>Clinker Cooler</option>
+
+                    <option>Cement Grinding</option>
+
+                    <option>Alternative Fuel</option>
+
+                    <option>Utilities</option>
+
+                    <option>Environment</option>
+
+                    <option>Other</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Priority</label>
+
+                <select id="findingPriority">
+
+                    <option value="High">High</option>
+
+                    <option value="Medium" selected>Medium</option>
+
+                    <option value="Low">Low</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>Finding</label>
+
+                <input
+                    type="text"
+                    id="findingDescription"
+                    placeholder="Describe the identified finding">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>Observation / Details</label>
+
+                <textarea
+                    id="findingObservation"
+                    placeholder="Add detailed observations, measurements or comments"></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Status</label>
+
+                <select id="findingStatus">
+
+                    <option value="Open" selected>Open</option>
+
+                    <option value="In Progress">In Progress</option>
+
+                    <option value="Closed">Closed</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                class="button"
+                onclick="saveFinding()">
+
+                Save Finding
+
+            </button>
+
+
+            <button
+                class="cancel-button"
+                onclick="closeForm()">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- TOOLBAR -->
+
     <div class="toolbar">
 
-        <h3>Finding Records</h3>
+        <h3>
+            Finding Records
+        </h3>
 
-        <a class="button" href="#">
+
+        <button
+            class="button"
+            onclick="openForm()">
+
             + New Finding
-        </a>
+
+        </button>
 
     </div>
 
+
+    <!-- TABLE -->
 
     <section class="table-container">
 
@@ -215,40 +485,22 @@
 
                     <th>Area / Equipment</th>
 
+                    <th>Process</th>
+
                     <th>Finding</th>
 
                     <th>Priority</th>
 
                     <th>Status</th>
 
+                    <th>Action</th>
+
                 </tr>
 
             </thead>
 
 
-            <tbody>
-
-                <tr>
-
-                    <td>PV-001</td>
-
-                    <td>--</td>
-
-                    <td>--</td>
-
-                    <td>
-                        No finding recorded yet.
-                    </td>
-
-                    <td class="priority-medium">
-                        Medium
-                    </td>
-
-                    <td>
-                        Open
-                    </td>
-
-                </tr>
+            <tbody id="findingTableBody">
 
             </tbody>
 
@@ -263,7 +515,353 @@
 
     </a>
 
+
 </main>
+
+
+<script>
+
+
+    /* LOAD FINDINGS */
+
+    function getFindings() {
+
+        const data =
+            localStorage.getItem("processVisitFindings");
+
+        if (!data) {
+
+            return [];
+
+        }
+
+        return JSON.parse(data);
+
+    }
+
+
+    /* SAVE FINDINGS */
+
+    function saveFindings(findings) {
+
+        localStorage.setItem(
+            "processVisitFindings",
+            JSON.stringify(findings)
+        );
+
+    }
+
+
+    /* OPEN FORM */
+
+    function openForm() {
+
+        document.getElementById(
+            "findingForm"
+        ).style.display = "block";
+
+        document.getElementById(
+            "findingForm"
+        ).scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* CLOSE FORM */
+
+    function closeForm() {
+
+        document.getElementById(
+            "findingForm"
+        ).style.display = "none";
+
+    }
+
+
+    /* SAVE NEW FINDING */
+
+    function saveFinding() {
+
+        const date =
+            document.getElementById("findingDate").value;
+
+        const area =
+            document.getElementById("findingArea").value;
+
+        const process =
+            document.getElementById("findingProcess").value;
+
+        const priority =
+            document.getElementById("findingPriority").value;
+
+        const description =
+            document.getElementById("findingDescription").value;
+
+        const observation =
+            document.getElementById("findingObservation").value;
+
+        const status =
+            document.getElementById("findingStatus").value;
+
+
+        if (!date || !area || !process || !description) {
+
+            alert(
+                "Please complete Date, Area / Equipment, Process and Finding."
+            );
+
+            return;
+
+        }
+
+
+        const findings = getFindings();
+
+
+        const newNumber =
+            findings.length + 1;
+
+
+        const newFinding = {
+
+            id:
+                "PV-" +
+                String(newNumber).padStart(3, "0"),
+
+            date: date,
+
+            area: area,
+
+            process: process,
+
+            description: description,
+
+            observation: observation,
+
+            priority: priority,
+
+            status: status
+
+        };
+
+
+        findings.push(newFinding);
+
+        saveFindings(findings);
+
+
+        document.getElementById(
+            "findingDate"
+        ).value = "";
+
+        document.getElementById(
+            "findingArea"
+        ).value = "";
+
+        document.getElementById(
+            "findingProcess"
+        ).value = "";
+
+        document.getElementById(
+            "findingPriority"
+        ).value = "Medium";
+
+        document.getElementById(
+            "findingDescription"
+        ).value = "";
+
+        document.getElementById(
+            "findingObservation"
+        ).value = "";
+
+        document.getElementById(
+            "findingStatus"
+        ).value = "Open";
+
+
+        closeForm();
+
+        renderFindings();
+
+    }
+
+
+    /* DELETE FINDING */
+
+    function deleteFinding(index) {
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this finding?"
+            );
+
+
+        if (!confirmDelete) {
+
+            return;
+
+        }
+
+
+        const findings = getFindings();
+
+        findings.splice(index, 1);
+
+        saveFindings(findings);
+
+        renderFindings();
+
+    }
+
+
+    /* RENDER TABLE */
+
+    function renderFindings() {
+
+        const tableBody =
+            document.getElementById(
+                "findingTableBody"
+            );
+
+
+        const findings = getFindings();
+
+
+        tableBody.innerHTML = "";
+
+
+        if (findings.length === 0) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-message">
+
+                        No findings recorded yet.
+                        Click "+ New Finding" to create the first record.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        findings.forEach(
+            (finding, index) => {
+
+
+                let priorityClass =
+                    "priority-medium";
+
+
+                if (finding.priority === "High") {
+
+                    priorityClass =
+                        "priority-high";
+
+                }
+
+
+                if (finding.priority === "Low") {
+
+                    priorityClass =
+                        "priority-low";
+
+                }
+
+
+                let statusClass =
+                    "status-open";
+
+
+                if (finding.status === "Closed") {
+
+                    statusClass =
+                        "status-closed";
+
+                }
+
+
+                if (finding.status === "In Progress") {
+
+                    statusClass =
+                        "status-progress";
+
+                }
+
+
+                tableBody.innerHTML += `
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                ${finding.id}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${finding.date}
+                        </td>
+
+                        <td>
+                            ${finding.area}
+                        </td>
+
+                        <td>
+                            ${finding.process}
+                        </td>
+
+                        <td>
+                            ${finding.description}
+                        </td>
+
+                        <td class="${priorityClass}">
+                            ${finding.priority}
+                        </td>
+
+                        <td class="${statusClass}">
+                            ${finding.status}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="delete-button"
+                                onclick="deleteFinding(${index})">
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+    }
+
+
+    /* INITIAL LOAD */
+
+    renderFindings();
+
+
+</script>
 
 
 </body>
