@@ -666,8 +666,73 @@
     }
 
 
-    loadFinding();
 
+    function loadRootCauses() {
+
+    const rootCauses =
+        JSON.parse(
+            localStorage.getItem("processVisitRootCauses") || "[]"
+        );
+
+    const relatedRootCauses =
+        rootCauses.filter(
+            item => item.findingId === findingId
+        );
+
+    const container =
+        document.getElementById("rootCauseContainer");
+
+    if (relatedRootCauses.length === 0) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    relatedRootCauses.forEach(function(rootCause) {
+
+        const rootCauseBox =
+            document.createElement("div");
+
+        rootCauseBox.className = "info-item";
+
+        rootCauseBox.innerHTML = `
+            <strong>${rootCause.id}</strong><br><br>
+
+            <strong>Category:</strong>
+            ${rootCause.category || "-"}<br><br>
+
+            <strong>Status:</strong>
+            ${rootCause.status || "-"}<br><br>
+
+            <strong>Root Cause:</strong><br>
+            ${rootCause.description || "-"}<br><br>
+
+            <strong>Evidence / Analysis:</strong><br>
+            ${rootCause.evidence || "-"}<br><br>
+
+            <strong>Responsible:</strong>
+            ${rootCause.responsible || "-"}
+        `;
+
+        container.appendChild(rootCauseBox);
+    });
+
+    const addButton =
+        document.createElement("a");
+
+    addButton.href =
+        "../RootCause/index.html?findingId=" +
+        encodeURIComponent(findingId);
+
+    addButton.className = "add-button";
+
+    addButton.textContent =
+        "+ Add Another Root Cause";
+
+    container.appendChild(addButton);
+}
+    loadFinding();
+loadRootCauses();
 
 </script>
 
