@@ -454,10 +454,11 @@
             <br>
 
 
-            <a
-    href="#"
+        <a
+    href="../RootCause/index.html"
     id="addRootCauseButton"
-    class="add-button">
+    class="add-button"
+    onclick="window.location.href='../RootCause/index.html?findingId=' + encodeURIComponent(new URLSearchParams(window.location.search).get('id')); return false;">
     + Add Root Cause
 </a>
 
@@ -670,10 +671,6 @@
 
 </script>
 
-<script>
-    document.getElementById("addRootCauseButton").href =
-        "../RootCause/index.html?findingId=" + encodeURIComponent(findingId);
-</script>
 </body>
 
 </html>
