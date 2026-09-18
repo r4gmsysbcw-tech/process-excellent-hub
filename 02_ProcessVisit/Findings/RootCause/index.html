@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Root Cause | ProcessVisit</title>
+
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+
+        header {
+            background: #17212b;
+            color: white;
+            padding: 25px 40px;
+        }
+
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+
+        header p {
+            margin: 8px 0 0;
+            color: #cbd5e1;
+        }
+
+
+        nav {
+            background: #243447;
+            padding: 12px 40px;
+        }
+
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 14px;
+        }
+
+
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+
+        .hero {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+
+        .hero h2 {
+            margin: 0 0 10px 0;
+            font-size: 30px;
+        }
+
+
+        .hero p {
+            margin: 0;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+
+        .finding-reference {
+            margin-top: 20px;
+            padding: 15px 18px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+
+        .finding-reference strong {
+            color: #17212b;
+        }
+
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+
+        .form-section h3 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+
+        label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+
+        input,
+        select,
+        textarea {
+
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 14px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+
+            outline: none;
+
+            border-color: #64748b;
+
+        }
+
+
+        .buttons {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+
+        }
+
+
+        button {
+
+            border: none;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+        }
+
+
+        .save-button {
+
+            background: #17212b;
+
+            color: white;
+
+        }
+
+
+        .cancel-button {
+
+            background: #e2e8f0;
+
+            color: #1f2937;
+
+        }
+
+
+        .message {
+
+            margin-top: 20px;
+
+            padding: 14px;
+
+            border-radius: 8px;
+
+            display: none;
+
+        }
+
+
+        .success {
+
+            background: #dcfce7;
+
+            color: #166534;
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-group.full {
+
+                grid-column: auto;
+
+            }
+
+
+            .buttons {
+
+                flex-direction: column;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>PROCESS EXCELLENT HUB</h1>
+
+    <p>Process Excellence Management Platform</p>
+
+</header>
+
+
+<nav>
+
+    <a href="../../../index.html">
+        HOME
+    </a>
+
+    <a href="../../index.html">
+        PROCESSVISIT
+    </a>
+
+    <a href="../index.html">
+        FINDINGS
+    </a>
+
+    <a href="../Detail/index.html">
+        FINDING DETAIL
+    </a>
+
+</nav>
+
+
+<main>
+
+
+    <section class="hero">
+
+        <h2>
+            Root Cause
+        </h2>
+
+        <p>
+            Define and document the root cause
+            associated with a ProcessVisit finding.
+        </p>
+
+
+        <div class="finding-reference">
+
+            Related Finding:
+
+            <strong id="findingReference">
+                --
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <section class="form-section">
+
+        <h3>
+            Root Cause Record
+        </h3>
+
+
+        <form id="rootCauseForm">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="rootCauseId">
+                        Root Cause ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="rootCauseId"
+                        readonly>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <select id="category" required>
+
+                        <option value="">
+                            Select category
+                        </option>
+
+                        <option value="Process">
+                            Process
+                        </option>
+
+                        <option value="Equipment">
+                            Equipment
+                        </option>
+
+                        <option value="Control">
+                            Control / Automation
+                        </option>
+
+                        <option value="Material">
+                            Material
+                        </option>
+
+                        <option value="Human">
+                            Human / Operator
+                        </option>
+
+                        <option value="Method">
+                            Method / Procedure
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="description">
+                        Root Cause Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        placeholder="Describe the identified root cause..."
+                        required></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="evidence">
+                        Evidence / Analysis
+                    </label>
+
+                    <textarea
+                        id="evidence"
+                        placeholder="Enter supporting observations, measurements, analysis or evidence..."></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="responsible">
+                        Responsible
+                    </label>
+
+                    <input
+                        type="text"
+                        id="responsible"
+                        placeholder="Responsible person / department">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="status">
+                        Status
+                    </label>
+
+                    <select id="status">
+
+                        <option value="Open">
+                            Open
+                        </option>
+
+                        <option value="Under Review">
+                            Under Review
+                        </option>
+
+                        <option value="Confirmed">
+                            Confirmed
+                        </option>
+
+                        <option value="Closed">
+                            Closed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="save-button">
+
+                    Save Root Cause
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    onclick="goBack()">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+        <div
+            id="successMessage"
+            class="message success">
+
+            Root Cause has been saved successfully.
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+
+    /* GET RELATED FINDING ID */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const findingId =
+        params.get("findingId");
+
+
+    document.getElementById(
+        "findingReference"
+    ).textContent =
+        findingId || "Not specified";
+
+
+    /* GENERATE ROOT CAUSE ID */
+
+    function generateRootCauseId() {
+
+        const rootCauses =
+            JSON.parse(
+                localStorage.getItem(
+                    "processVisitRootCauses"
+                ) || "[]"
+            );
+
+
+        const number =
+            rootCauses.length + 1;
+
+
+        return "RC-" +
+            String(number).padStart(3, "0");
+
+    }
+
+
+    document.getElementById(
+        "rootCauseId"
+    ).value =
+        generateRootCauseId();
+
+
+    /* SAVE ROOT CAUSE */
+
+    document.getElementById(
+        "rootCauseForm"
+    ).addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const rootCause = {
+
+                id:
+                    document.getElementById(
+                        "rootCauseId"
+                    ).value,
+
+                findingId:
+                    findingId,
+
+                category:
+                    document.getElementById(
+                        "category"
+                    ).value,
+
+                description:
+                    document.getElementById(
+                        "description"
+                    ).value,
+
+                evidence:
+                    document.getElementById(
+                        "evidence"
+                    ).value,
+
+                responsible:
+                    document.getElementById(
+                        "responsible"
+                    ).value,
+
+                status:
+                    document.getElementById(
+                        "status"
+                    ).value,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            const rootCauses =
+                JSON.parse(
+                    localStorage.getItem(
+                        "processVisitRootCauses"
+                    ) || "[]"
+                );
+
+
+            rootCauses.push(rootCause);
+
+
+            localStorage.setItem(
+                "processVisitRootCauses",
+                JSON.stringify(rootCauses)
+            );
+
+
+            document.getElementById(
+                "successMessage"
+            ).style.display =
+                "block";
+
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "../Detail/index.html?id="
+                        + findingId;
+
+                },
+                1000
+            );
+
+        }
+    );
+
+
+    /* CANCEL */
+
+    function goBack() {
+
+        window.location.href =
+            "../Detail/index.html?id="
+            + findingId;
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
