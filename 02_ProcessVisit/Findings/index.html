@@ -2,10 +2,14 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Findings | ProcessVisit</title>
+
 
     <style>
 
@@ -16,26 +20,31 @@
             color: #1f2937;
         }
 
+
         header {
             background: #17212b;
             color: white;
             padding: 25px 40px;
         }
 
+
         header h1 {
             margin: 0;
             font-size: 28px;
         }
+
 
         header p {
             margin: 8px 0 0;
             color: #cbd5e1;
         }
 
+
         nav {
             background: #243447;
             padding: 12px 40px;
         }
+
 
         nav a {
             color: white;
@@ -44,11 +53,13 @@
             font-size: 14px;
         }
 
+
         main {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: 40px auto;
             padding: 0 25px;
         }
+
 
         .hero {
             background: white;
@@ -57,15 +68,18 @@
             margin-bottom: 25px;
         }
 
+
         .hero h2 {
             margin-top: 0;
             font-size: 32px;
         }
 
+
         .hero p {
             color: #64748b;
             font-size: 17px;
         }
+
 
         .toolbar {
             display: flex;
@@ -74,9 +88,11 @@
             margin-bottom: 20px;
         }
 
+
         .toolbar h3 {
             margin: 0;
         }
+
 
         .button {
             background: #17212b;
@@ -89,9 +105,11 @@
             cursor: pointer;
         }
 
+
         .button:hover {
             background: #243447;
         }
+
 
         .table-container {
             background: white;
@@ -100,10 +118,12 @@
             border: 1px solid #e2e8f0;
         }
 
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
 
         th {
             background: #f8fafc;
@@ -113,41 +133,76 @@
             border-bottom: 1px solid #e2e8f0;
         }
 
+
         td {
             padding: 15px;
             border-bottom: 1px solid #e2e8f0;
             font-size: 14px;
         }
 
+
         .priority-high {
             color: #b91c1c;
             font-weight: bold;
         }
+
 
         .priority-medium {
             color: #b45309;
             font-weight: bold;
         }
 
+
         .priority-low {
             color: #15803d;
             font-weight: bold;
         }
+
 
         .status-open {
             color: #b45309;
             font-weight: bold;
         }
 
+
         .status-closed {
             color: #15803d;
             font-weight: bold;
         }
 
+
         .status-progress {
             color: #2563eb;
             font-weight: bold;
         }
+
+
+        .view-button {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+
+        .view-button:hover {
+            text-decoration: underline;
+        }
+
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+
+        .delete-button:hover {
+            text-decoration: underline;
+        }
+
 
         .back {
             display: inline-block;
@@ -159,7 +214,9 @@
             border-radius: 8px;
         }
 
-        /* FORM */
+
+        /* NEW FINDING FORM */
+
 
         .form-container {
             display: none;
@@ -170,10 +227,12 @@
             margin-bottom: 25px;
         }
 
+
         .form-container h3 {
             margin-top: 0;
             margin-bottom: 25px;
         }
+
 
         .form-grid {
             display: grid;
@@ -181,14 +240,17 @@
             gap: 20px;
         }
 
+
         .form-group {
             display: flex;
             flex-direction: column;
         }
 
+
         .form-group.full {
             grid-column: 1 / -1;
         }
+
 
         .form-group label {
             font-size: 13px;
@@ -196,6 +258,7 @@
             margin-bottom: 7px;
             color: #475569;
         }
+
 
         .form-group input,
         .form-group select,
@@ -208,16 +271,19 @@
             box-sizing: border-box;
         }
 
+
         .form-group textarea {
             min-height: 100px;
             resize: vertical;
         }
+
 
         .form-actions {
             margin-top: 25px;
             display: flex;
             gap: 10px;
         }
+
 
         .cancel-button {
             background: #e2e8f0;
@@ -228,21 +294,15 @@
             cursor: pointer;
         }
 
+
         .empty-message {
             text-align: center;
             padding: 30px;
             color: #64748b;
         }
 
-        .delete-button {
-            background: none;
-            border: none;
-            color: #b91c1c;
-            cursor: pointer;
-            font-size: 13px;
-        }
 
-        @media (max-width: 700px) {
+        @media (max-width: 800px) {
 
             .toolbar {
                 flex-direction: column;
@@ -250,9 +310,11 @@
                 gap: 15px;
             }
 
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
+
 
             .form-group.full {
                 grid-column: auto;
@@ -263,6 +325,7 @@
     </style>
 
 </head>
+
 
 <body>
 
@@ -278,13 +341,21 @@
 
 <nav>
 
-    <a href="../../index.html">HOME</a>
+    <a href="../../index.html">
+        HOME
+    </a>
 
-    <a href="../index.html">PROCESSVISIT</a>
+    <a href="../index.html">
+        PROCESSVISIT
+    </a>
 
-    <a href="#">KPI CENTER</a>
+    <a href="#">
+        KPI CENTER
+    </a>
 
-    <a href="#">ACTION CENTER</a>
+    <a href="#">
+        ACTION CENTER
+    </a>
 
 </nav>
 
@@ -292,9 +363,13 @@
 <main>
 
 
+    <!-- HERO -->
+
     <section class="hero">
 
-        <h2>ProcessVisit – Findings</h2>
+        <h2>
+            ProcessVisit – Findings
+        </h2>
 
         <p>
             Process findings identified during field observations,
@@ -306,24 +381,37 @@
 
     <!-- NEW FINDING FORM -->
 
-    <section class="form-container" id="findingForm">
+    <section
+        class="form-container"
+        id="findingForm">
 
-        <h3>New Finding</h3>
+
+        <h3>
+            New Finding
+        </h3>
+
 
         <div class="form-grid">
 
+
             <div class="form-group">
 
-                <label>Date</label>
+                <label>
+                    Date
+                </label>
 
-                <input type="date" id="findingDate">
+                <input
+                    type="date"
+                    id="findingDate">
 
             </div>
 
 
             <div class="form-group">
 
-                <label>Area / Equipment</label>
+                <label>
+                    Area / Equipment
+                </label>
 
                 <input
                     type="text"
@@ -335,31 +423,55 @@
 
             <div class="form-group">
 
-                <label>Process</label>
+                <label>
+                    Process
+                </label>
 
                 <select id="findingProcess">
 
-                    <option value="">Select Process</option>
+                    <option value="">
+                        Select Process
+                    </option>
 
-                    <option>Raw Material Preparation</option>
+                    <option>
+                        Raw Material Preparation
+                    </option>
 
-                    <option>Raw Mill</option>
+                    <option>
+                        Raw Mill
+                    </option>
 
-                    <option>Pyroprocess</option>
+                    <option>
+                        Pyroprocess
+                    </option>
 
-                    <option>Kiln</option>
+                    <option>
+                        Kiln
+                    </option>
 
-                    <option>Clinker Cooler</option>
+                    <option>
+                        Clinker Cooler
+                    </option>
 
-                    <option>Cement Grinding</option>
+                    <option>
+                        Cement Grinding
+                    </option>
 
-                    <option>Alternative Fuel</option>
+                    <option>
+                        Alternative Fuel
+                    </option>
 
-                    <option>Utilities</option>
+                    <option>
+                        Utilities
+                    </option>
 
-                    <option>Environment</option>
+                    <option>
+                        Environment
+                    </option>
 
-                    <option>Other</option>
+                    <option>
+                        Other
+                    </option>
 
                 </select>
 
@@ -368,15 +480,23 @@
 
             <div class="form-group">
 
-                <label>Priority</label>
+                <label>
+                    Priority
+                </label>
 
                 <select id="findingPriority">
 
-                    <option value="High">High</option>
+                    <option value="High">
+                        High
+                    </option>
 
-                    <option value="Medium" selected>Medium</option>
+                    <option value="Medium" selected>
+                        Medium
+                    </option>
 
-                    <option value="Low">Low</option>
+                    <option value="Low">
+                        Low
+                    </option>
 
                 </select>
 
@@ -385,7 +505,9 @@
 
             <div class="form-group full">
 
-                <label>Finding</label>
+                <label>
+                    Finding
+                </label>
 
                 <input
                     type="text"
@@ -397,7 +519,9 @@
 
             <div class="form-group full">
 
-                <label>Observation / Details</label>
+                <label>
+                    Observation / Details
+                </label>
 
                 <textarea
                     id="findingObservation"
@@ -408,15 +532,23 @@
 
             <div class="form-group">
 
-                <label>Status</label>
+                <label>
+                    Status
+                </label>
 
                 <select id="findingStatus">
 
-                    <option value="Open" selected>Open</option>
+                    <option value="Open" selected>
+                        Open
+                    </option>
 
-                    <option value="In Progress">In Progress</option>
+                    <option value="In Progress">
+                        In Progress
+                    </option>
 
-                    <option value="Closed">Closed</option>
+                    <option value="Closed">
+                        Closed
+                    </option>
 
                 </select>
 
@@ -426,6 +558,7 @@
 
 
         <div class="form-actions">
+
 
             <button
                 class="button"
@@ -444,7 +577,9 @@
 
             </button>
 
+
         </div>
+
 
     </section>
 
@@ -452,6 +587,7 @@
     <!-- TOOLBAR -->
 
     <div class="toolbar">
+
 
         <h3>
             Finding Records
@@ -466,50 +602,74 @@
 
         </button>
 
+
     </div>
 
 
-    <!-- TABLE -->
+    <!-- FINDINGS TABLE -->
 
     <section class="table-container">
 
+
         <table>
+
 
             <thead>
 
                 <tr>
 
-                    <th>ID</th>
+                    <th>
+                        ID
+                    </th>
 
-                    <th>Date</th>
+                    <th>
+                        Date
+                    </th>
 
-                    <th>Area / Equipment</th>
+                    <th>
+                        Area / Equipment
+                    </th>
 
-                    <th>Process</th>
+                    <th>
+                        Process
+                    </th>
 
-                    <th>Finding</th>
+                    <th>
+                        Finding
+                    </th>
 
-                    <th>Priority</th>
+                    <th>
+                        Priority
+                    </th>
 
-                    <th>Status</th>
+                    <th>
+                        Status
+                    </th>
 
-                    <th>Action</th>
+                    <th>
+                        Action
+                    </th>
 
                 </tr>
 
             </thead>
 
 
-            <tbody id="findingTableBody">
+            <tbody
+                id="findingTableBody">
 
             </tbody>
 
+
         </table>
+
 
     </section>
 
 
-    <a class="back" href="../index.html">
+    <a
+        class="back"
+        href="../index.html">
 
         ← Back to ProcessVisit
 
@@ -522,12 +682,16 @@
 <script>
 
 
-    /* LOAD FINDINGS */
+    /* GET FINDINGS */
+
 
     function getFindings() {
 
         const data =
-            localStorage.getItem("processVisitFindings");
+            localStorage.getItem(
+                "processVisitFindings"
+            );
+
 
         if (!data) {
 
@@ -535,12 +699,14 @@
 
         }
 
+
         return JSON.parse(data);
 
     }
 
 
     /* SAVE FINDINGS */
+
 
     function saveFindings(findings) {
 
@@ -554,15 +720,20 @@
 
     /* OPEN FORM */
 
+
     function openForm() {
 
-        document.getElementById(
-            "findingForm"
-        ).style.display = "block";
+        const form =
+            document.getElementById(
+                "findingForm"
+            );
 
-        document.getElementById(
-            "findingForm"
-        ).scrollIntoView({
+
+        form.style.display =
+            "block";
+
+
+        form.scrollIntoView({
             behavior: "smooth"
         });
 
@@ -571,42 +742,71 @@
 
     /* CLOSE FORM */
 
+
     function closeForm() {
 
         document.getElementById(
             "findingForm"
-        ).style.display = "none";
+        ).style.display =
+            "none";
 
     }
 
 
     /* SAVE NEW FINDING */
 
+
     function saveFinding() {
 
+
         const date =
-            document.getElementById("findingDate").value;
+            document.getElementById(
+                "findingDate"
+            ).value;
+
 
         const area =
-            document.getElementById("findingArea").value;
+            document.getElementById(
+                "findingArea"
+            ).value;
+
 
         const process =
-            document.getElementById("findingProcess").value;
+            document.getElementById(
+                "findingProcess"
+            ).value;
+
 
         const priority =
-            document.getElementById("findingPriority").value;
+            document.getElementById(
+                "findingPriority"
+            ).value;
+
 
         const description =
-            document.getElementById("findingDescription").value;
+            document.getElementById(
+                "findingDescription"
+            ).value;
+
 
         const observation =
-            document.getElementById("findingObservation").value;
+            document.getElementById(
+                "findingObservation"
+            ).value;
+
 
         const status =
-            document.getElementById("findingStatus").value;
+            document.getElementById(
+                "findingStatus"
+            ).value;
 
 
-        if (!date || !area || !process || !description) {
+        if (
+            !date ||
+            !area ||
+            !process ||
+            !description
+        ) {
 
             alert(
                 "Please complete Date, Area / Equipment, Process and Finding."
@@ -617,64 +817,128 @@
         }
 
 
-        const findings = getFindings();
+        const findings =
+            getFindings();
 
+/* UPDATE EXISTING FINDING */
 
+if (window.editingFindingIndex !== undefined) {
+
+    const index = window.editingFindingIndex;
+
+    findings[index] = {
+        ...findings[index],
+        date: date,
+        area: area,
+        process: process,
+        description: description,
+        observation: observation,
+        priority: priority,
+        status: status
+    };
+
+    saveFindings(findings);
+
+    window.editingFindingIndex = undefined;
+
+    document.getElementById("findingDate").value = "";
+    document.getElementById("findingArea").value = "";
+    document.getElementById("findingProcess").value = "";
+    document.getElementById("findingPriority").value = "Medium";
+    document.getElementById("findingDescription").value = "";
+    document.getElementById("findingObservation").value = "";
+    document.getElementById("findingStatus").value = "Open";
+
+    closeForm();
+    renderFindings();
+
+    return;
+}
         const newNumber =
             findings.length + 1;
 
 
         const newFinding = {
 
+
             id:
                 "PV-" +
-                String(newNumber).padStart(3, "0"),
+                String(newNumber)
+                    .padStart(3, "0"),
 
-            date: date,
 
-            area: area,
+            date:
+                date,
 
-            process: process,
 
-            description: description,
+            area:
+                area,
 
-            observation: observation,
 
-            priority: priority,
+            process:
+                process,
 
-            status: status
+
+            description:
+                description,
+
+
+            observation:
+                observation,
+
+
+            priority:
+                priority,
+
+
+            status:
+                status
 
         };
 
 
-        findings.push(newFinding);
+        findings.push(
+            newFinding
+        );
 
-        saveFindings(findings);
+
+        saveFindings(
+            findings
+        );
+
+
+        /* CLEAR FORM */
 
 
         document.getElementById(
             "findingDate"
         ).value = "";
 
+
         document.getElementById(
             "findingArea"
         ).value = "";
+
 
         document.getElementById(
             "findingProcess"
         ).value = "";
 
+
         document.getElementById(
             "findingPriority"
         ).value = "Medium";
+
 
         document.getElementById(
             "findingDescription"
         ).value = "";
 
+
         document.getElementById(
             "findingObservation"
         ).value = "";
+
 
         document.getElementById(
             "findingStatus"
@@ -683,6 +947,7 @@
 
         closeForm();
 
+
         renderFindings();
 
     }
@@ -690,7 +955,46 @@
 
     /* DELETE FINDING */
 
+/* EDIT FINDING */
+
+function editFinding(index) {
+
+    const findings = getFindings();
+
+    const finding = findings[index];
+
+    if (!finding) {
+        return;
+    }
+
+    window.editingFindingIndex = index;
+
+    document.getElementById("findingDate").value =
+        finding.date;
+
+    document.getElementById("findingArea").value =
+        finding.area;
+
+    document.getElementById("findingProcess").value =
+        finding.process;
+
+    document.getElementById("findingPriority").value =
+        finding.priority;
+
+    document.getElementById("findingDescription").value =
+        finding.description;
+
+    document.getElementById("findingObservation").value =
+        finding.observation;
+
+    document.getElementById("findingStatus").value =
+        finding.status;
+
+    openForm();
+
+}
     function deleteFinding(index) {
+
 
         const confirmDelete =
             confirm(
@@ -705,20 +1009,31 @@
         }
 
 
-        const findings = getFindings();
+        const findings =
+            getFindings();
 
-        findings.splice(index, 1);
 
-        saveFindings(findings);
+        findings.splice(
+            index,
+            1
+        );
+
+
+        saveFindings(
+            findings
+        );
+
 
         renderFindings();
 
     }
 
 
-    /* RENDER TABLE */
+    /* RENDER FINDINGS */
+
 
     function renderFindings() {
+
 
         const tableBody =
             document.getElementById(
@@ -726,13 +1041,18 @@
             );
 
 
-        const findings = getFindings();
+        const findings =
+            getFindings();
 
 
-        tableBody.innerHTML = "";
+        tableBody.innerHTML =
+            "";
 
 
-        if (findings.length === 0) {
+        if (
+            findings.length === 0
+        ) {
+
 
             tableBody.innerHTML = `
 
@@ -751,6 +1071,7 @@
 
             `;
 
+
             return;
 
         }
@@ -764,7 +1085,9 @@
                     "priority-medium";
 
 
-                if (finding.priority === "High") {
+                if (
+                    finding.priority === "High"
+                ) {
 
                     priorityClass =
                         "priority-high";
@@ -772,7 +1095,9 @@
                 }
 
 
-                if (finding.priority === "Low") {
+                if (
+                    finding.priority === "Low"
+                ) {
 
                     priorityClass =
                         "priority-low";
@@ -784,7 +1109,9 @@
                     "status-open";
 
 
-                if (finding.status === "Closed") {
+                if (
+                    finding.status === "Closed"
+                ) {
 
                     statusClass =
                         "status-closed";
@@ -792,7 +1119,9 @@
                 }
 
 
-                if (finding.status === "In Progress") {
+                if (
+                    finding.status === "In Progress"
+                ) {
 
                     statusClass =
                         "status-progress";
@@ -805,48 +1134,69 @@
                     <tr>
 
                         <td>
+
                             <strong>
                                 ${finding.id}
                             </strong>
+
                         </td>
+
 
                         <td>
                             ${finding.date}
                         </td>
 
+
                         <td>
                             ${finding.area}
                         </td>
+
 
                         <td>
                             ${finding.process}
                         </td>
 
+
                         <td>
                             ${finding.description}
                         </td>
 
-                        <td class="${priorityClass}">
+
+                        <td
+                            class="${priorityClass}">
+
                             ${finding.priority}
+
                         </td>
 
-                        <td class="${statusClass}">
+
+                        <td
+                            class="${statusClass}">
+
                             ${finding.status}
+
                         </td>
+
 
                         <td>
-<a
-    href="Detail/index.html?id=${finding.id}"
-    style="
-        color:#2563eb;
-        text-decoration:none;
-        font-weight:bold;
-        margin-right:12px;
-    ">
 
-    View
+
+                            <a
+                                class="view-button"
+                                href="Detail/index.html?id=${finding.id}">
+
+                                View
+
+                            </a>
+<a
+    class="edit-button"
+    href="#"
+    onclick="editFinding(${index}); return false;">
+
+    Edit
 
 </a>
+
                             <button
                                 class="delete-button"
                                 onclick="deleteFinding(${index})">
@@ -854,6 +1204,7 @@
                                 Delete
 
                             </button>
+
 
                         </td>
 
@@ -868,6 +1219,7 @@
 
 
     /* INITIAL LOAD */
+
 
     renderFindings();
 
