@@ -556,20 +556,20 @@
 
         <div class="empty-box">
 
-            No root cause has been assigned to this finding yet.
+            <div id="rootCauseList">
+    <p>No root cause has been assigned to this finding yet.</p>
+</div>
 
+<br>
 
-            <br>
+<a
+    href="#"
+    id="addRootCauseButton"
+    class="add-button">
 
+    + Add Root Cause
 
-            <a
-                href="#"
-                id="addRootCauseButton"
-                class="add-button">
-
-                + Add Root Cause
-
-            </a>
+</a>
 
         </div>
 
@@ -659,7 +659,28 @@
         params.get("id");
 document.getElementById("addRootCauseButton").href =
     `../RootCause/index.html?findingId=${encodeURIComponent(findingId)}`;
+const rootCauseList = document.getElementById("rootCauseList");
 
+const rootCauses = JSON.parse(
+    localStorage.getItem("processVisitRootCauses")
+) || [];
+
+const relatedRootCauses = rootCauses.filter(
+    rootCause => rootCause.findingId === findingId
+);
+
+if (relatedRootCauses.length > 0) {
+    rootCauseList.innerHTML = relatedRootCauses.map(rootCause => `
+        <div style="padding: 16px; margin-bottom: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <strong>${rootCause.id}</strong><br>
+            <strong>Category:</strong> ${rootCause.category || "-"}<br>
+            <strong>Root Cause:</strong> ${rootCause.description || "-"}<br>
+            <strong>Evidence / Analysis:</strong> ${rootCause.evidence || "-"}<br>
+            <strong>Responsible:</strong> ${rootCause.responsible || "-"}<br>
+            <strong>Status:</strong> ${rootCause.status || "-"}
+        </div>
+    `).join("");
+}
     /* GET FINDINGS FROM LOCAL STORAGE */
 
     function getFindings() {
