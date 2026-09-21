@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Findings | ProcessVisit</title>
+
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+
+        header {
+            background: #17212b;
+            color: white;
+            padding: 25px 40px;
+        }
+
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+
+        header p {
+            margin: 8px 0 0;
+            color: #cbd5e1;
+        }
+
+
+        nav {
+            background: #243447;
+            padding: 12px 40px;
+        }
+
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 14px;
+        }
+
+
+        main {
+            max-width: 1250px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+
+        .hero {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+
+        .hero h2 {
+            margin-top: 0;
+            font-size: 32px;
+        }
+
+
+        .hero p {
+            color: #64748b;
+            font-size: 17px;
+        }
+
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+
+        .toolbar h3 {
+            margin: 0;
+        }
+
+
+        .button {
+            background: #17212b;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        .button:hover {
+            background: #243447;
+        }
+
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+
+        .priority-high {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+
+        .priority-medium {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+
+        .priority-low {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+
+        .status-open {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+
+        .status-closed {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+
+        .status-progress {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+
+        .view-button {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+
+        .view-button:hover {
+            text-decoration: underline;
+        }
+
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+
+        .delete-button:hover {
+            text-decoration: underline;
+        }
+
+
+        .back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 20px;
+            background: #17212b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+
+        /* NEW FINDING FORM */
+
+
+        .form-container {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+
+
+        .form-container h3 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 7px;
+            color: #475569;
+        }
+
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+
+        .form-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+
+        .cancel-button {
+            background: #e2e8f0;
+            color: #334155;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+
+        @media (max-width: 800px) {
+
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>PROCESS EXCELLENT HUB</h1>
+
+    <p>Process Excellence Management Platform</p>
+
+</header>
+
+
+<nav>
+
+    <a href="../../index.html">
+        HOME
+    </a>
+
+    <a href="../index.html">
+        PROCESSVISIT
+    </a>
+
+    <a href="#">
+        KPI CENTER
+    </a>
+
+    <a href="#">
+        ACTION CENTER
+    </a>
+
+</nav>
+
+
+<main>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h2>
+            ProcessVisit – Findings
+        </h2>
+
+        <p>
+            Process findings identified during field observations,
+            process audits and operational reviews.
+        </p>
+
+    </section>
+
+
+    <!-- NEW FINDING FORM -->
+
+    <section
+        class="form-container"
+        id="findingForm">
+
+
+        <h3>
+            New Finding
+        </h3>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="findingDate">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Area / Equipment
+                </label>
+
+                <input
+                    type="text"
+                    id="findingArea"
+                    placeholder="e.g. Raw Mill, Kiln, Cooler">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Process
+                </label>
+
+                <select id="findingProcess">
+
+                    <option value="">
+                        Select Process
+                    </option>
+
+                    <option>
+                        Raw Material Preparation
+                    </option>
+
+                    <option>
+                        Raw Mill
+                    </option>
+
+                    <option>
+                        Pyroprocess
+                    </option>
+
+                    <option>
+                        Kiln
+                    </option>
+
+                    <option>
+                        Clinker Cooler
+                    </option>
+
+                    <option>
+                        Cement Grinding
+                    </option>
+
+                    <option>
+                        Alternative Fuel
+                    </option>
+
+                    <option>
+                        Utilities
+                    </option>
+
+                    <option>
+                        Environment
+                    </option>
+
+                    <option>
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Priority
+                </label>
+
+                <select id="findingPriority">
+
+                    <option value="High">
+                        High
+                    </option>
+
+                    <option value="Medium" selected>
+                        Medium
+                    </option>
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Finding
+                </label>
+
+                <input
+                    type="text"
+                    id="findingDescription"
+                    placeholder="Describe the identified finding">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Observation / Details
+                </label>
+
+                <textarea
+                    id="findingObservation"
+                    placeholder="Add detailed observations, measurements or comments"></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="findingStatus">
+
+                    <option value="Open" selected>
+                        Open
+                    </option>
+
+                    <option value="In Progress">
+                        In Progress
+                    </option>
+
+                    <option value="Closed">
+                        Closed
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-actions">
+
+
+            <button
+                class="button"
+                onclick="saveFinding()">
+
+                Save Finding
+
+            </button>
+
+
+            <button
+                class="cancel-button"
+                onclick="closeForm()">
+
+                Cancel
+
+            </button>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- TOOLBAR -->
+
+    <div class="toolbar">
+
+
+        <h3>
+            Finding Records
+        </h3>
+
+
+        <button
+            class="button"
+            onclick="openForm()">
+
+            + New Finding
+
+        </button>
+
+
+    </div>
+
+
+    <!-- FINDINGS TABLE -->
+
+    <section class="table-container">
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Area / Equipment
+                    </th>
+
+                    <th>
+                        Process
+                    </th>
+
+                    <th>
+                        Finding
+                    </th>
+
+                    <th>
+                        Priority
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="findingTableBody">
+
+            </tbody>
+
+
+        </table>
+
+
+    </section>
+
+
+    <a
+        class="back"
+        href="../index.html">
+
+        ← Back to ProcessVisit
+
+    </a>
+
+
+</main>
+
+
+<script>
+
+
+    /* GET FINDINGS */
+
+
+    function getFindings() {
+
+        const data =
+            localStorage.getItem(
+                "processVisitFindings"
+            );
+
+
+        if (!data) {
+
+            return [];
+
+        }
+
+
+        return JSON.parse(data);
+
+    }
+
+
+    /* SAVE FINDINGS */
+
+
+    function saveFindings(findings) {
+
+        localStorage.setItem(
+            "processVisitFindings",
+            JSON.stringify(findings)
+        );
+
+    }
+
+
+    /* OPEN FORM */
+
+
+    function openForm() {
+
+        const form =
+            document.getElementById(
+                "findingForm"
+            );
+
+
+        form.style.display =
+            "block";
+
+
+        form.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+    /* CLOSE FORM */
+
+
+    function closeForm() {
+
+        document.getElementById(
+            "findingForm"
+        ).style.display =
+            "none";
+
+    }
+
+
+    /* SAVE NEW FINDING */
+
+
+    function saveFinding() {
+
+
+        const date =
+            document.getElementById(
+                "findingDate"
+            ).value;
+
+
+        const area =
+            document.getElementById(
+                "findingArea"
+            ).value;
+
+
+        const process =
+            document.getElementById(
+                "findingProcess"
+            ).value;
+
+
+        const priority =
+            document.getElementById(
+                "findingPriority"
+            ).value;
+
+
+        const description =
+            document.getElementById(
+                "findingDescription"
+            ).value;
+
+
+        const observation =
+            document.getElementById(
+                "findingObservation"
+            ).value;
+
+
+        const status =
+            document.getElementById(
+                "findingStatus"
+            ).value;
+
+
+        if (
+            !date ||
+            !area ||
+            !process ||
+            !description
+        ) {
+
+            alert(
+                "Please complete Date, Area / Equipment, Process and Finding."
+            );
+
+            return;
+
+        }
+
+
+        const findings =
+            getFindings();
+
+/* UPDATE EXISTING FINDING */
+
+if (window.editingFindingIndex !== undefined) {
+
+    const index = window.editingFindingIndex;
+
+    findings[index] = {
+        ...findings[index],
+        date: date,
+        area: area,
+        process: process,
+        description: description,
+        observation: observation,
+        priority: priority,
+        status: status
+    };
+
+    saveFindings(findings);
+
+    window.editingFindingIndex = undefined;
+
+    document.getElementById("findingDate").value = "";
+    document.getElementById("findingArea").value = "";
+    document.getElementById("findingProcess").value = "";
+    document.getElementById("findingPriority").value = "Medium";
+    document.getElementById("findingDescription").value = "";
+    document.getElementById("findingObservation").value = "";
+    document.getElementById("findingStatus").value = "Open";
+
+    closeForm();
+    renderFindings();
+
+    return;
+}
+        const newNumber =
+            findings.length + 1;
+
+
+        const newFinding = {
+
+
+            id:
+                "PV-" +
+                String(newNumber)
+                    .padStart(3, "0"),
+
+
+            date:
+                date,
+
+
+            area:
+                area,
+
+
+            process:
+                process,
+
+
+            description:
+                description,
+
+
+            observation:
+                observation,
+
+
+            priority:
+                priority,
+
+
+            status:
+                status
+
+        };
+
+
+        findings.push(
+            newFinding
+        );
+
+
+        saveFindings(
+            findings
+        );
+
+
+        /* CLEAR FORM */
+
+
+        document.getElementById(
+            "findingDate"
+        ).value = "";
+
+
+        document.getElementById(
+            "findingArea"
+        ).value = "";
+
+
+        document.getElementById(
+            "findingProcess"
+        ).value = "";
+
+
+        document.getElementById(
+            "findingPriority"
+        ).value = "Medium";
+
+
+        document.getElementById(
+            "findingDescription"
+        ).value = "";
+
+
+        document.getElementById(
+            "findingObservation"
+        ).value = "";
+
+
+        document.getElementById(
+            "findingStatus"
+        ).value = "Open";
+
+
+        closeForm();
+
+
+        renderFindings();
+
+    }
+
+
+    /* DELETE FINDING */
+
+/* EDIT FINDING */
+
+function editFinding(index) {
+
+    const findings = getFindings();
+
+    const finding = findings[index];
+
+    if (!finding) {
+        return;
+    }
+
+    window.editingFindingIndex = index;
+
+    document.getElementById("findingDate").value =
+        finding.date;
+
+    document.getElementById("findingArea").value =
+        finding.area;
+
+    document.getElementById("findingProcess").value =
+        finding.process;
+
+    document.getElementById("findingPriority").value =
+        finding.priority;
+
+    document.getElementById("findingDescription").value =
+        finding.description;
+
+    document.getElementById("findingObservation").value =
+        finding.observation;
+
+    document.getElementById("findingStatus").value =
+        finding.status;
+
+    openForm();
+
+}
+    function deleteFinding(index) {
+
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to delete this finding?"
+            );
+
+
+        if (!confirmDelete) {
+
+            return;
+
+        }
+
+
+        const findings =
+            getFindings();
+
+
+        findings.splice(
+            index,
+            1
+        );
+
+
+        saveFindings(
+            findings
+        );
+
+
+        renderFindings();
+
+    }
+
+
+    /* RENDER FINDINGS */
+
+
+    function renderFindings() {
+
+
+        const tableBody =
+            document.getElementById(
+                "findingTableBody"
+            );
+
+
+        const findings =
+            getFindings();
+
+
+        tableBody.innerHTML =
+            "";
+
+
+        if (
+            findings.length === 0
+        ) {
+
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-message">
+
+                        No findings recorded yet.
+                        Click "+ New Finding" to create the first record.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        findings.forEach(
+            (finding, index) => {
+
+
+                let priorityClass =
+                    "priority-medium";
+
+
+                if (
+                    finding.priority === "High"
+                ) {
+
+                    priorityClass =
+                        "priority-high";
+
+                }
+
+
+                if (
+                    finding.priority === "Low"
+                ) {
+
+                    priorityClass =
+                        "priority-low";
+
+                }
+
+
+                let statusClass =
+                    "status-open";
+
+
+                if (
+                    finding.status === "Closed"
+                ) {
+
+                    statusClass =
+                        "status-closed";
+
+                }
+
+
+                if (
+                    finding.status === "In Progress"
+                ) {
+
+                    statusClass =
+                        "status-progress";
+
+                }
+
+
+                tableBody.innerHTML += `
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                ${finding.id}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+                            ${finding.date}
+                        </td>
+
+
+                        <td>
+                            ${finding.area}
+                        </td>
+
+
+                        <td>
+                            ${finding.process}
+                        </td>
+
+
+                        <td>
+                            ${finding.description}
+                        </td>
+
+
+                        <td
+                            class="${priorityClass}">
+
+                            ${finding.priority}
+
+                        </td>
+
+
+                        <td
+                            class="${statusClass}">
+
+                            ${finding.status}
+
+                        </td>
+
+
+                        <td>
+
+
+                            <a
+                                class="view-button"
+                                href="Detail/index.html?id=${finding.id}">
+
+                                View
+
+                            </a>
+<a
+    class="edit-button"
+    href="#"
+    onclick="editFinding(${index}); return false;">
+
+    Edit
+
+</a>
+
+                            <button
+                                class="delete-button"
+                                onclick="deleteFinding(${index})">
+
+                                Delete
+
+                            </button>
+
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+    }
+
+
+    /* INITIAL LOAD */
+
+
+    renderFindings();
+
+
+</script>
+
+
+</body>
+
+</html>

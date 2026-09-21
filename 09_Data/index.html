@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Process Excellent Hub</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+        header {
+            background: #111827;
+            color: white;
+            padding: 22px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-top: 5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #dbeafe;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        /* HERO */
+        .hero {
+            padding: 55px 50px 40px;
+            background: white;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            max-width: 800px;
+            color: #64748b;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        /* PROJECTS */
+        .section {
+            padding: 35px 50px;
+        }
+
+        .section-title {
+            font-size: 25px;
+            margin-bottom: 22px;
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 210px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+        }
+
+        .project-number {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .project-card h3 {
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .project-card p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .project-link {
+            display: inline-block;
+            margin-top: 22px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* KPI */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        .kpi-title {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .kpi-value {
+            font-size: 34px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .kpi-description {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 30px;
+            padding: 25px 50px;
+            background: #111827;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 1000px) {
+            .projects {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+
+        <div>
+            <div class="logo">
+                PROCESS EXCELLENT HUB
+            </div>
+
+            <div class="subtitle">
+                Cement Process Management & Excellence Platform
+            </div>
+        </div>
+
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Projects</a>
+            <a href="#">KPI Center</a>
+            <a href="#">Action Center</a>
+            <a href="#">Documents</a>
+        </nav>
+
+    </header>
+
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <h1>
+            Process Excellence
+        </h1>
+
+        <p>
+            A digital platform for process improvement, performance management,
+            automation, alternative fuel management and process intelligence.
+        </p>
+
+    </section>
+
+
+    <!-- PROJECTS -->
+    <section class="section">
+
+        <h2 class="section-title">
+            Project Portfolio
+        </h2>
+
+        <div class="projects">
+
+            <div class="project-card" onclick="window.location.href='02_ProcessVisit/index.html';" style="cursor:pointer;"> 
+                <div class="project-number">01</div>
+
+                <h3>ProcessVisit</h3>
+
+                <p>
+                    Process findings, field observations,
+                    root causes and improvement actions.
+                </p>
+
+                <div class="project-link">
+                    Explore Project →
+                </div>
+            </div>
+
+
+            <div class="project-card">
+                <div class="project-number">02</div>
+
+                <h3>DigiProcess</h3>
+
+                <p>
+                    Digital process control, PID optimization,
+                    automation and operator support systems.
+                </p>
+
+                <div class="project-link">
+                    Explore Project →
+                </div>
+            </div>
+
+
+            <div class="project-card">
+                <div class="project-number">03</div>
+
+                <h3>WastePRO</h3>
+
+                <p>
+                    Alternative fuel management, TSR,
+                    fuel quality, mix optimization and actions.
+                </p>
+
+                <div class="project-link">
+                    Explore Project →
+                </div>
+            </div>
+
+
+            <div class="project-card">
+                <div class="project-number">04</div>
+
+                <h3>PROTarget</h3>
+
+                <p>
+                    KPI targets, actual performance,
+                    gaps, root causes and improvement actions.
+                </p>
+
+                <div class="project-link">
+                    Explore Project →
+                </div>
+            </div>
+
+
+            <div class="project-card">
+                <div class="project-number">05</div>
+
+                <h3>ProGenius</h3>
+
+                <p>
+                    Process intelligence, knowledge management
+                    and future AI-supported decision systems.
+                </p>
+
+                <div class="project-link">
+                    Explore Project →
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- KPI CENTER -->
+    <section class="section">
+
+        <h2 class="section-title">
+            Process Performance
+        </h2>
+
+        <div class="dashboard">
+
+            <div class="kpi-card">
+                <div class="kpi-title">
+                    KPI Performance
+                </div>
+
+                <div class="kpi-value">
+                    --
+                </div>
+
+                <div class="kpi-description">
+                    Target vs Actual
+                </div>
+            </div>
+
+
+            <div class="kpi-card">
+                <div class="kpi-title">
+                    Open Actions
+                </div>
+
+                <div class="kpi-value">
+                    --
+                </div>
+
+                <div class="kpi-description">
+                    Active improvement actions
+                </div>
+            </div>
+
+
+            <div class="kpi-card">
+                <div class="kpi-title">
+                    Process Stability
+                </div>
+
+                <div class="kpi-value">
+                    --
+                </div>
+
+                <div class="kpi-description">
+                    Process stability indicator
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        PROCESS EXCELLENT HUB
+        <br>
+        Cement Process Management & Continuous Improvement
+
+    </footer>
+
+</body>
+</html>
