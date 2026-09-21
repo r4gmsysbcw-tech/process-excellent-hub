@@ -564,6 +564,7 @@
 
             <a
                 href="#"
+                id="addRootCauseButton"
                 class="add-button">
 
                 + Add Root Cause
@@ -656,7 +657,8 @@
 
     const findingId =
         params.get("id");
-
+document.getElementById("addRootCauseButton").href =
+    `../RootCause/index.html?findingId=${encodeURIComponent(findingId)}`;
 
     /* GET FINDINGS FROM LOCAL STORAGE */
 
