@@ -375,7 +375,45 @@
 
 
     <script>
+/* DOCUMENT FILE STORAGE - INDEXED DB */
 
+const documentDBRequest = indexedDB.open(
+    "ProcessExcellentHubDB",
+    1
+);
+
+documentDBRequest.onupgradeneeded = function (event) {
+
+    const db = event.target.result;
+
+    if (!db.objectStoreNames.contains("documentFiles")) {
+
+        db.createObjectStore(
+            "documentFiles",
+            {
+                keyPath: "documentId"
+            }
+        );
+
+    }
+};
+
+documentDBRequest.onsuccess = function () {
+
+    console.log(
+        "Document file database ready."
+    );
+
+};
+
+documentDBRequest.onerror = function () {
+
+    console.error(
+        "Document file database error:",
+        documentDBRequest.error
+    );
+
+};
         /* GET FINDING ID FROM URL */
 
         const params =
