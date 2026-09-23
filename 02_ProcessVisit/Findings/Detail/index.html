@@ -612,7 +612,7 @@
 
 
         <div class="empty-box">
-
+<div id="documentList"></div>
             No documents are attached to this finding yet.
 
 
@@ -684,7 +684,37 @@ if (relatedRootCauses.length > 0) {
         </div>
     `).join("");
 }
-    /* GET FINDINGS FROM LOCAL STORAGE */
+    /* GET DOCUMENTS FROM LOCAL STORAGE */
+
+const documentList = document.getElementById("documentList");
+
+const documents = JSON.parse(
+    localStorage.getItem("processVisitDocuments")
+) || [];
+
+const relatedDocuments = documents.filter(
+    document => document.findingId === findingId
+);
+
+if (relatedDocuments.length > 0) {
+
+    documentList.innerHTML = relatedDocuments.map(document => `
+        <div style="padding:16px; margin-bottom:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <strong>${document.documentId}</strong><br>
+            <strong>Document Name:</strong> ${document.documentName || "-"}<br>
+            <strong>Document Type:</strong> ${document.documentType || "-"}<br>
+            <strong>Responsible:</strong> ${document.responsible || "-"}<br>
+            <strong>Description:</strong> ${document.description || "-"}<br>
+            <strong>Status:</strong> ${document.status || "-"}<br>
+            <strong>File:</strong> ${document.fileName || "-"}
+        </div>
+    `).join("");
+
+} else {
+
+    documentList.innerHTML = "No documents are attached to this finding yet.";
+
+}/* GET FINDINGS FROM LOCAL STORAGE */
 
     function getFindings() {
 
