@@ -683,8 +683,124 @@ if (relatedRootCauses.length > 0) {
             <strong>Status:</strong> ${rootCause.status || "-"}
         </div>
     `).join("");
+}/* GET ACTUAL DOCUMENT FILE FROM INDEXED DB */
+
+function getDocumentFile(documentId) {
+
+    return new Promise((resolve, reject) => {
+
+        const request = indexedDB.open(
+            "ProcessExcellentHubDB",
+            1
+        );
+
+        request.onsuccess = function () {
+
+            const db = request.result;
+
+            const transaction = db.transaction(
+                ["documentFiles"],
+                "readonly"
+            );
+
+            const store =
+                transaction.objectStore(
+                    "documentFiles"
+                );
+
+            const getRequest =
+                store.get(documentId);
+
+            getRequest.onsuccess = function () {
+
+                db.close();
+
+                resolve(
+                    getRequest.result || null
+                );
+
+            };
+
+            getRequest.onerror = function () {
+
+                db.close();
+
+                reject(
+                    getRequest.error
+                );
+
+            };
+
+        };
+
+        request.onerror = function () {
+
+            reject(
+                request.error
+            );
+
+        };
+
+    });
+
 }
-    /* GET DOCUMENTS FROM LOCAL STORAGE */
+ /* CREATE DOCUMENT FILE LINK */
+
+function createDocumentFileLink(documentId) {
+
+    getDocumentFile(documentId)
+        .then((record) => {
+
+            const fileContainer =
+                document.getElementById(
+                    "file-" + documentId
+                );
+
+            if (!fileContainer) {
+                return;
+            }
+
+            if (!record || !record.file) {
+
+                fileContainer.innerHTML =
+                    "File not available";
+
+                return;
+            }
+
+            const fileUrl =
+                URL.createObjectURL(record.file);
+
+            fileContainer.innerHTML = `
+                ${record.fileName}
+                <br>
+                <a
+                    href="${fileUrl}"
+                    target="_blank"
+                    style="margin-right:10px;"
+                >
+                    Open
+                </a>
+
+                <a
+                    href="${fileUrl}"
+                    download="${record.fileName}"
+                >
+                    Download
+                </a>
+            `;
+
+        })
+        .catch((error) => {
+
+            console.error(
+                "Document file read error:",
+                error
+            );
+
+        });
+
+}   /* GET DOCUMENTS FROM LOCAL STORAGE */
 
 const documentList = document.getElementById("documentList");
 
@@ -706,10 +822,19 @@ if (relatedDocuments.length > 0) {
             <strong>Responsible:</strong> ${document.responsible || "-"}<br>
             <strong>Description:</strong> ${document.description || "-"}<br>
             <strong>Status:</strong> ${document.status || "-"}<br>
-            <strong>File:</strong> ${document.fileName || "-"}
+            <strong>File:</strong>
+<span id="file-${document.documentId}">
+    ${document.fileName || "-"}
+</span>
         </div>
     `).join("");
+relatedDocuments.forEach(document => {
 
+    createDocumentFileLink(
+        document.documentId
+    );
+
+});
 } else {
 
     documentList.innerHTML = "No documents are attached to this finding yet.";
