@@ -414,7 +414,73 @@ documentDBRequest.onerror = function () {
     );
 
 };
-        /* GET FINDING ID FROM URL */
+        /* SAVE ACTUAL DOCUMENT FILE */
+
+function saveDocumentFile(file, documentId) {
+
+    return new Promise((resolve, reject) => {
+
+        const request = indexedDB.open(
+            "ProcessExcellentHubDB",
+            1
+        );
+
+        request.onsuccess = function () {
+
+            const db = request.result;
+
+            const transaction = db.transaction(
+                ["documentFiles"],
+                "readwrite"
+            );
+
+            const store =
+                transaction.objectStore(
+                    "documentFiles"
+                );
+
+            const fileRecord = {
+                documentId: documentId,
+                file: file,
+                fileName: file.name,
+                fileType: file.type,
+                fileSize: file.size,
+                createdAt: new Date().toISOString()
+            };
+
+            store.put(fileRecord);
+
+            transaction.oncomplete = function () {
+
+                db.close();
+
+                resolve(true);
+
+            };
+
+            transaction.onerror = function () {
+
+                db.close();
+
+                reject(
+                    transaction.error
+                );
+
+            };
+
+        };
+
+        request.onerror = function () {
+
+            reject(
+                request.error
+            );
+
+        };
+
+    });
+
+}/* GET FINDING ID FROM URL */
 
         const params =
             new URLSearchParams(window.location.search);
@@ -538,23 +604,49 @@ documentDBRequest.onerror = function () {
                 };
 
 
-                const documents =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "processVisitDocuments"
-                        )
-                    ) || [];
+                saveDocumentFile(
+    file,
+    documentRecord.documentId
+)
+.then(() => {
 
+    const documents =
+        JSON.parse(
+            localStorage.getItem(
+                "processVisitDocuments"
+            )
+        ) || [];
 
-                documents.push(
-                    documentRecord
-                );
+    documents.push(
+        documentRecord
+    );
 
+    localStorage.setItem(
+        "processVisitDocuments",
+        JSON.stringify(documents)
+    );
 
-                localStorage.setItem(
-                    "processVisitDocuments",
-                    JSON.stringify(documents)
-                );
+    document.getElementById(
+        "successMessage"
+    ).style.display = "block";
+
+    document.getElementById(
+        "documentId"
+    ).value = generateDocumentId();
+
+})
+.catch((error) => {
+
+    console.error(
+        "Document file save error:",
+        error
+    );
+
+    alert(
+        "The document file could not be saved."
+    );
+
+});
 
 
                 document.getElementById(
