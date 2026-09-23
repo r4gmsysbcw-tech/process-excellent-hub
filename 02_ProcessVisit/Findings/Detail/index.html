@@ -620,7 +620,8 @@
 
 
             <a
-                href="#"
+                href="../Document/index.html"
+                id="addDocumentButton"
                 class="add-button">
 
                 + Add Document
@@ -657,6 +658,8 @@
 
     const findingId =
         params.get("id");
+        document.getElementById("addDocumentButton").href =
+    `../Document/index.html?findingId=${encodeURIComponent(findingId)}`;
 document.getElementById("addRootCauseButton").href =
     `../RootCause/index.html?findingId=${encodeURIComponent(findingId)}`;
 const rootCauseList = document.getElementById("rootCauseList");

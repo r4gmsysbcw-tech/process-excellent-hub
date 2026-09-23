@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document | ProcessVisit</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #172b3f;
+        }
+
+        header {
+            background: #172536;
+            color: white;
+            padding: 22px 30px;
+        }
+
+        header h1 {
+            margin: 0 0 6px 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 0;
+            color: #d7e1ea;
+        }
+
+        nav {
+            background: #22364d;
+            padding: 12px 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 30px;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #172b3f;
+        }
+
+        .finding-reference {
+            background: #f5f8fb;
+            border: 1px solid #dce5ed;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd7e2;
+            border-radius: 7px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input[readonly] {
+            background: #f3f5f7;
+        }
+
+        .button-row {
+            margin-top: 25px;
+        }
+
+        button {
+            background: #172536;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #263d55;
+        }
+
+        .success {
+            display: none;
+            background: #e8f5e9;
+            border: 1px solid #b7d9bb;
+            color: #285b30;
+            padding: 14px;
+            border-radius: 7px;
+            margin-top: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #274a68;
+            text-decoration: none;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>PROCESS EXCELLENT HUB</h1>
+        <p>Process Excellence Management Platform</p>
+    </header>
+
+    <nav>
+        <a href="../../../index.html">HOME</a>
+        <a href="../../index.html">PROCESSVISIT</a>
+        <a href="../index.html">FINDINGS</a>
+    </nav>
+
+    <main>
+
+        <div class="card">
+
+            <h2>Document</h2>
+
+            <p>
+                Define and document the file or supporting document associated
+                with a ProcessVisit finding.
+            </p>
+
+            <div class="finding-reference">
+                <strong>Related Finding:</strong>
+                <span id="findingReference">Not specified</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Document Record</h2>
+
+            <form id="documentForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="documentId">
+                            Document ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="documentId"
+                            readonly
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="findingId">
+                            Finding ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="findingId"
+                            readonly
+                        >
+                    </div>
+
+
+                    <div class="form-group full-width">
+                        <label for="documentName">
+                            Document Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="documentName"
+                            placeholder="Enter document name..."
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="documentType">
+                            Document Type
+                        </label>
+
+                        <select id="documentType" required>
+
+                            <option value="">
+                                Select document type
+                            </option>
+
+                            <option value="PDF">
+                                PDF
+                            </option>
+
+                            <option value="Excel">
+                                Excel
+                            </option>
+
+                            <option value="Word">
+                                Word
+                            </option>
+
+                            <option value="PowerPoint">
+                                PowerPoint
+                            </option>
+
+                            <option value="Image">
+                                Image
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="responsible">
+                            Responsible
+                        </label>
+
+                        <input
+                            type="text"
+                            id="responsible"
+                            placeholder="Responsible person / department"
+                        >
+                    </div>
+
+
+                    <div class="form-group full-width">
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            placeholder="Describe the document and its relevance..."
+                        ></textarea>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="status">
+                            Status
+                        </label>
+
+                        <select id="status">
+
+                            <option value="Open">
+                                Open
+                            </option>
+
+                            <option value="Under Review">
+                                Under Review
+                            </option>
+
+                            <option value="Closed">
+                                Closed
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="file">
+                            File
+                        </label>
+
+                        <input
+                            type="file"
+                            id="file"
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="button-row">
+
+                    <button type="submit">
+                        Save Document
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="successMessage"
+                    class="success"
+                >
+                    Document saved successfully.
+                </div>
+
+            </form>
+
+
+            <a
+                id="backLink"
+                class="back-link"
+                href="#"
+            >
+                ← Back to Finding
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /* GET FINDING ID FROM URL */
+
+        const params =
+            new URLSearchParams(window.location.search);
+
+        const findingId =
+            params.get("findingId") || "";
+
+
+        /* SHOW FINDING ID */
+
+        document.getElementById(
+            "findingReference"
+        ).textContent =
+            findingId || "Not specified";
+
+
+        document.getElementById(
+            "findingId"
+        ).value =
+            findingId;
+
+
+        /* GENERATE DOCUMENT ID */
+
+        function generateDocumentId() {
+
+            const documents =
+                JSON.parse(
+                    localStorage.getItem(
+                        "processVisitDocuments"
+                    )
+                ) || [];
+
+            const number =
+                documents.length + 1;
+
+            return "DOC-" +
+                String(number).padStart(3, "0");
+        }
+
+
+        document.getElementById(
+            "documentId"
+        ).value =
+            generateDocumentId();
+
+
+        /* BACK TO FINDING */
+
+        document.getElementById(
+            "backLink"
+        ).href =
+            "../Detail/index.html?id=" +
+            encodeURIComponent(findingId);
+
+
+        /* SAVE DOCUMENT */
+
+        document.getElementById(
+            "documentForm"
+        ).addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const file =
+                    document.getElementById(
+                        "file"
+                    ).files[0];
+
+
+                const documentRecord = {
+
+                    id:
+                        document.getElementById(
+                            "documentId"
+                        ).value,
+
+                    findingId:
+                        findingId,
+
+                    name:
+                        document.getElementById(
+                            "documentName"
+                        ).value,
+
+                    type:
+                        document.getElementById(
+                            "documentType"
+                        ).value,
+
+                    description:
+                        document.getElementById(
+                            "description"
+                        ).value,
+
+                    responsible:
+                        document.getElementById(
+                            "responsible"
+                        ).value,
+
+                    status:
+                        document.getElementById(
+                            "status"
+                        ).value,
+
+                    fileName:
+                        file ? file.name : "",
+
+                    fileType:
+                        file ? file.type : "",
+
+                    fileSize:
+                        file ? file.size : 0,
+
+                    createdAt:
+                        new Date().toISOString()
+
+                };
+
+
+                const documents =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "processVisitDocuments"
+                        )
+                    ) || [];
+
+
+                documents.push(
+                    documentRecord
+                );
+
+
+                localStorage.setItem(
+                    "processVisitDocuments",
+                    JSON.stringify(documents)
+                );
+
+
+                document.getElementById(
+                    "successMessage"
+                ).style.display =
+                    "block";
+
+
+                document.getElementById(
+                    "documentId"
+                ).value =
+                    generateDocumentId();
+
+            }
+        );
+const urlParams = new URLSearchParams(window.location.search);
+const findingIdFromUrl = urlParams.get("findingId");
+
+if (findingIdFromUrl) {
+    document.getElementById("findingId").value = findingIdFromUrl;
+}
+    </script>
+
+</body>
+
+</html>
