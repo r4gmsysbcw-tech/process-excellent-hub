@@ -755,20 +755,93 @@ function getDocumentFileIcon(fileName) {
             .pop()
             .toLowerCase();
 
-    if (extension === "xlsx" || extension === "xls") {
-        return "📊";
+    if (
+        extension === "xlsx" ||
+        extension === "xls"
+    ) {
+        return `
+            <div style="
+                width:52px;
+                height:52px;
+                background:#217346;
+                color:white;
+                border-radius:8px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:12px;
+                font-weight:bold;
+                margin:auto;
+            ">
+                XLS
+            </div>
+        `;
     }
 
-    if (extension === "docx" || extension === "doc") {
-        return "📄";
+    if (
+        extension === "docx" ||
+        extension === "doc"
+    ) {
+        return `
+            <div style="
+                width:52px;
+                height:52px;
+                background:#2b579a;
+                color:white;
+                border-radius:8px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:12px;
+                font-weight:bold;
+                margin:auto;
+            ">
+                DOC
+            </div>
+        `;
     }
 
-    if (extension === "pptx" || extension === "ppt") {
-        return "📽️";
+    if (
+        extension === "pptx" ||
+        extension === "ppt"
+    ) {
+        return `
+            <div style="
+                width:52px;
+                height:52px;
+                background:#d24726;
+                color:white;
+                border-radius:8px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:12px;
+                font-weight:bold;
+                margin:auto;
+            ">
+                PPT
+            </div>
+        `;
     }
 
     if (extension === "pdf") {
-        return "📕";
+        return `
+            <div style="
+                width:52px;
+                height:52px;
+                background:#c62828;
+                color:white;
+                border-radius:8px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:12px;
+                font-weight:bold;
+                margin:auto;
+            ">
+                PDF
+            </div>
+        `;
     }
 
     if (
@@ -776,10 +849,42 @@ function getDocumentFileIcon(fileName) {
         extension === "jpeg" ||
         extension === "png"
     ) {
-        return "🖼️";
+        return `
+            <div style="
+                width:52px;
+                height:52px;
+                background:#607d8b;
+                color:white;
+                border-radius:8px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:12px;
+                font-weight:bold;
+                margin:auto;
+            ">
+                IMG
+            </div>
+        `;
     }
 
-    return "📎";
+    return `
+        <div style="
+            width:52px;
+            height:52px;
+            background:#546e7a;
+            color:white;
+            border-radius:8px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:12px;
+            font-weight:bold;
+            margin:auto;
+        ">
+            FILE
+        </div>
+    `;
 }
 function createDocumentFileLink(documentId) {
 
