@@ -613,7 +613,7 @@
 
         <div class="empty-box">
 <div id="documentList"></div>
-            No documents are attached to this finding yet.
+            
 
 
             <br>
@@ -886,6 +886,93 @@ function getDocumentFileIcon(fileName) {
         </div>
     `;
 }
+/* DELETE DOCUMENT */
+
+function deleteDocument(documentId) {
+
+    const confirmed = confirm(
+        "Are you sure you want to delete this document?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    /* DELETE FROM LOCAL STORAGE */
+
+    const documents =
+        JSON.parse(
+            localStorage.getItem(
+                "processVisitDocuments"
+            )
+        ) || [];
+
+    const updatedDocuments =
+        documents.filter(
+            document => document.documentId !== documentId
+        );
+
+    localStorage.setItem(
+        "processVisitDocuments",
+        JSON.stringify(updatedDocuments)
+    );
+
+    /* DELETE ACTUAL FILE FROM INDEXED DB */
+
+    const request = indexedDB.open(
+        "ProcessExcellentHubDB",
+        1
+    );
+
+    request.onsuccess = function () {
+
+        const db = request.result;
+
+        const transaction =
+            db.transaction(
+                ["documentFiles"],
+                "readwrite"
+            );
+
+        const store =
+            transaction.objectStore(
+                "documentFiles"
+            );
+
+        store.delete(documentId);
+
+        transaction.oncomplete = function () {
+
+            db.close();
+
+            location.reload();
+
+        };
+
+        transaction.onerror = function () {
+
+            db.close();
+
+            console.error(
+                "Document delete error:",
+                transaction.error
+            );
+
+        };
+
+    };
+
+    request.onerror = function () {
+
+        console.error(
+            "IndexedDB error:",
+            request.error
+        );
+
+    };
+
+}
+
 function createDocumentFileLink(documentId) {
 
     getDocumentFile(documentId)
@@ -913,12 +1000,11 @@ function createDocumentFileLink(documentId) {
 
          fileContainer.innerHTML = `
     <div style="
-        text-align:center;
+        text-align:left;
         padding:12px;
     ">
 
         <div style="
-            font-size:42px;
             margin-bottom:8px;
         ">
             ${getDocumentFileIcon(record.fileName)}
@@ -956,6 +1042,7 @@ function createDocumentFileLink(documentId) {
                 style="
                     display:inline-block;
                     padding:8px 14px;
+                    margin-right:8px;
                     background:#2563eb;
                     color:white;
                     border-radius:6px;
@@ -966,10 +1053,27 @@ function createDocumentFileLink(documentId) {
                 Download
             </a>
 
+            <button
+                type="button"
+                onclick="deleteDocument('${documentId}')"
+                style="
+                    display:inline-block;
+                    padding:8px 14px;
+                    background:#dc2626;
+                    color:white;
+                    border:none;
+                    border-radius:6px;
+                    font-weight:bold;
+                    cursor:pointer;
+                "
+            >
+                Delete
+            </button>
+
         </div>
 
     </div>
-`;   
+`;
 
         })
         .catch((error) => {
