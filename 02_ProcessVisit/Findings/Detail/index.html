@@ -745,7 +745,42 @@ function getDocumentFile(documentId) {
 
 }
  /* CREATE DOCUMENT FILE LINK */
+/* GET DOCUMENT FILE ICON */
 
+function getDocumentFileIcon(fileName) {
+
+    const extension =
+        fileName
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+    if (extension === "xlsx" || extension === "xls") {
+        return "📊";
+    }
+
+    if (extension === "docx" || extension === "doc") {
+        return "📄";
+    }
+
+    if (extension === "pptx" || extension === "ppt") {
+        return "📽️";
+    }
+
+    if (extension === "pdf") {
+        return "📕";
+    }
+
+    if (
+        extension === "jpg" ||
+        extension === "jpeg" ||
+        extension === "png"
+    ) {
+        return "🖼️";
+    }
+
+    return "📎";
+}
 function createDocumentFileLink(documentId) {
 
     getDocumentFile(documentId)
@@ -771,24 +806,65 @@ function createDocumentFileLink(documentId) {
             const fileUrl =
                 URL.createObjectURL(record.file);
 
-            fileContainer.innerHTML = `
-                ${record.fileName}
-                <br>
-                <a
-                    href="${fileUrl}"
-                    target="_blank"
-                    style="margin-right:10px;"
-                >
-                    Open
-                </a>
+         fileContainer.innerHTML = `
+    <div style="
+        text-align:center;
+        padding:12px;
+    ">
 
-                <a
-                    href="${fileUrl}"
-                    download="${record.fileName}"
-                >
-                    Download
-                </a>
-            `;
+        <div style="
+            font-size:42px;
+            margin-bottom:8px;
+        ">
+            ${getDocumentFileIcon(record.fileName)}
+        </div>
+
+        <div style="
+            font-weight:bold;
+            margin-bottom:12px;
+        ">
+            ${record.fileName}
+        </div>
+
+        <div>
+
+            <a
+                href="${fileUrl}"
+                target="_blank"
+                style="
+                    display:inline-block;
+                    padding:8px 14px;
+                    margin-right:8px;
+                    background:#475569;
+                    color:white;
+                    border-radius:6px;
+                    text-decoration:none;
+                    font-weight:bold;
+                "
+            >
+                Open
+            </a>
+
+            <a
+                href="${fileUrl}"
+                download="${record.fileName}"
+                style="
+                    display:inline-block;
+                    padding:8px 14px;
+                    background:#2563eb;
+                    color:white;
+                    border-radius:6px;
+                    text-decoration:none;
+                    font-weight:bold;
+                "
+            >
+                Download
+            </a>
+
+        </div>
+
+    </div>
+`;   
 
         })
         .catch((error) => {
