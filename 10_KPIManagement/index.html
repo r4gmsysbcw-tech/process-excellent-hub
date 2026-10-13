@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPI Management Center | Process Excellent Hub</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #243247;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #172638;
+            color: #ffffff;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+            margin: 0 0 8px;
+        }
+
+        .sidebar .subtitle {
+            color: #aebdce;
+            font-size: 12px;
+            margin-bottom: 28px;
+        }
+
+        .menu-label {
+            color: #9fb0c3;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin: 22px 10px 8px;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 11px 12px;
+            margin: 4px 0;
+            color: #e1e8f0;
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .menu-item.active,
+        .menu-item:hover {
+            background: #30465f;
+            color: #ffffff;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+            margin: 0 0 8px;
+        }
+
+        .muted {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .button {
+            border: 0;
+            background: #244d76;
+            color: #ffffff;
+            padding: 11px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(130px, 1fr));
+            gap: 16px;
+            background: #ffffff;
+            padding: 20px;
+            border: 1px solid #e1e7ef;
+            border-radius: 12px;
+            margin-bottom: 22px;
+        }
+
+        .filter label {
+            display: block;
+            font-size: 12px;
+            color: #627187;
+            margin-bottom: 8px;
+        }
+
+        .filter select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d5dde7;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #243247;
+        }
+
+        .overview {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .metric {
+            background: #ffffff;
+            border: 1px solid #e1e7ef;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .metric-title {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .metric-value {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .panel {
+            background: #ffffff;
+            border: 1px solid #e1e7ef;
+            border-radius: 12px;
+            padding: 24px;
+            min-height: 240px;
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin: 0 0 10px;
+        }
+
+        .chart-placeholder {
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #718096;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+            .filters,
+            .overview {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .app {
+                display: block;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .main {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+
+        <aside class="sidebar">
+            <h2>PROCESS EXCELLENT HUB</h2>
+            <div class="subtitle">KPI Management Center</div>
+
+            <div class="menu-label">KPI MENÜSÜ</div>
+            <a class="menu-item active" href="#overview">Genel Bakış</a>
+            <a class="menu-item" href="#kiln">Döner Fırınlar</a>
+            <a class="menu-item" href="#rawmill">Farin Değirmenleri</a>
+            <a class="menu-item" href="#coal">Kömür Değirmenleri</a>
+            <a class="menu-item" href="#total">Toplam Klinker / Çimento</a>
+            <a class="menu-item" href="#grinding">Öğütme Performansı</a>
+            <a class="menu-item" href="#products">Ürün Bazlı 2026</a>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <h1>KPI Management Center</h1>
+                    <div class="muted">
+                        Cement Process Performance & Energy Management
+                    </div>
+                    <div style="margin-top: 12px;">
+    <a href="../index.html"
+       style="color: #244d76; text-decoration: none; font-size: 14px;">
+        ← Ana Sayfaya Dön
+    </a>
+</div>
+                </div>
+                <button class="button" type="button"
+                    onclick="window.print()">Sunum / Yazdır</button>
+            </header>
+
+            <section class="filters">
+                <div class="filter">
+                    <label for="equipment">Ekipman</label>
+                    <select id="equipment">
+                        <option value="all">Tüm ekipmanlar</option>
+                        <option value="DF1">DF1</option>
+                        <option value="DF2">DF2</option>
+                        <option value="FD1">FD1</option>
+                        <option value="FD2">FD2</option>
+                        <option value="CM1">CM1</option>
+                        <option value="CM2">CM2</option>
+                        <option value="CM3">CM3</option>
+                        <option value="CM4">CM4</option>
+                    </select>
+                </div>
+
+                <div class="filter">
+                    <label for="month">Ay</label>
+                    <select id="month">
+                        <option value="all">Tüm aylar</option>
+                        <option value="1">Ocak</option>
+                        <option value="2">Şubat</option>
+                        <option value="3">Mart</option>
+                        <option value="4">Nisan</option>
+                        <option value="5">Mayıs</option>
+                        <option value="6">Haziran</option>
+                        <option value="7">Temmuz</option>
+                        <option value="8">Ağustos</option>
+                        <option value="9">Eylül</option>
+                        <option value="10">Ekim</option>
+                        <option value="11">Kasım</option>
+                        <option value="12">Aralık</option>
+                    </select>
+                </div>
+
+                <div class="filter">
+                    <label for="year">Yıl</label>
+                    <select id="year">
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="overview" id="overview">
+                <div class="metric">
+                    <div class="metric-title">Üretim</div>
+                    <div class="metric-value">—</div>
+                    <div class="muted">ton</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-title">Özgül Enerji Tüketimi</div>
+                    <div class="metric-value">—</div>
+                    <div class="muted">kWh/ton</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-title">Kapasite</div>
+                    <div class="metric-value">—</div>
+                    <div class="muted">ton/saat veya tpd</div>
+                </div>
+            </section>
+
+            <section class="panel" id="kiln">
+                <h2>Proses Performans Grafikleri</h2>
+                <div class="muted">
+                    Ekipman, ay ve yıl seçimlerine göre analiz alanı
+                </div>
+
+                <div class="chart-placeholder">
+                    Excel verileri henüz yüklenmedi.<br>
+                    Bu alana doğrulanmış KPI verileri ve grafikler eklenecek.
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
