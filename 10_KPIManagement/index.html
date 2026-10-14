@@ -208,6 +208,9 @@
             }
         }
     </style>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 </head>
 
 <body>
@@ -243,6 +246,9 @@
                 </div>
                 <button class="button" type="button"
                     onclick="window.print()">Sunum / Yazdır</button>
+                    <button class="button" type="button" id="toggleExcelImportButton">
+    Excel'i Güncelle
+</button>
             </header>
 
             <section class="filters">
@@ -311,6 +317,33 @@
                 </div>
             </section>
 
+<section class="panel" id="excel-import" style="display: none; margin-bottom: 22px; min-height: auto;">
+    <h2>Excel KPI Verisi Aktarımı</h2>
+    <p class="muted">
+        Güncel KPI Excel dosyanı seçerek verileri tarayıcıda oku.
+        Dosya GitHub'a yüklenmez.
+    </p>
+
+    <label for="excelFile">Excel dosyası (.xlsx)</label>
+    <input
+        type="file"
+        id="excelFile"
+        accept=".xlsx,.xls"
+        style="display: block; margin-top: 10px; margin-bottom: 14px;"
+    >
+
+    <button class="button" type="button" id="readExcelButton">
+        Excel Dosyasını Oku
+    </button>
+
+    <div id="excelStatus" class="muted" style="margin-top: 14px;">
+        Henüz bir Excel dosyası seçilmedi.
+    </div>
+
+<div id="excelPreview" style="display:none;"></div>
+
+</section>
+
             <section class="panel" id="kiln">
                 <h2>Proses Performans Grafikleri</h2>
                 <div class="muted">
@@ -324,5 +357,205 @@
             </section>
         </main>
     </div>
+
+
+<script>
+const KPI_DB_NAME = "ProcessExcellentHubKPI";
+const KPI_STORE_NAME = "workbooks";
+const KPI_RECORD_ID = "current";
+
+function openKpiDatabase() {
+    return new Promise(function(resolve, reject) {
+        const request = indexedDB.open(KPI_DB_NAME, 1);
+
+        request.onupgradeneeded = function() {
+            const db = request.result;
+
+            if (!db.objectStoreNames.contains(KPI_STORE_NAME)) {
+                db.createObjectStore(KPI_STORE_NAME, {
+                    keyPath: "id"
+                });
+            }
+        };
+
+        request.onsuccess = function() {
+            resolve(request.result);
+        };
+
+        request.onerror = function() {
+            reject(request.error);
+        };
+    });
+}
+
+async function saveKpiWorkbook(file) {
+    const db = await openKpiDatabase();
+
+    return new Promise(function(resolve, reject) {
+        const transaction = db.transaction(
+            KPI_STORE_NAME,
+            "readwrite"
+        );
+
+        transaction.objectStore(KPI_STORE_NAME).put({
+            id: KPI_RECORD_ID,
+            file: file,
+            fileName: file.name,
+            importedAt: new Date().toISOString()
+        });
+
+        transaction.oncomplete = function() {
+            db.close();
+            resolve();
+        };
+
+        transaction.onerror = function() {
+            db.close();
+            reject(transaction.error);
+        };
+
+        transaction.onabort = function() {
+            db.close();
+            reject(transaction.error);
+        };
+    });
+}
+
+async function loadKpiWorkbook() {
+    const db = await openKpiDatabase();
+
+    return new Promise(function(resolve, reject) {
+        const transaction = db.transaction(
+            KPI_STORE_NAME,
+            "readonly"
+        );
+
+        const request = transaction
+            .objectStore(KPI_STORE_NAME)
+            .get(KPI_RECORD_ID);
+
+        request.onsuccess = function() {
+            const record = request.result || null;
+            db.close();
+            resolve(record);
+        };
+
+        request.onerror = function() {
+            db.close();
+            reject(request.error);
+        };
+    });
+}
+
+async function displayKpiWorkbook(file, isSavedFile) {
+    const status = document.getElementById("excelStatus");
+    const preview = document.getElementById("excelPreview");
+
+    try {
+        if (typeof XLSX === "undefined") {
+            throw new Error("Excel kütüphanesi yüklenemedi.");
+        }
+
+        const buffer = await file.arrayBuffer();
+        const workbook = XLSX.read(buffer, {
+            type: "array"
+        });
+
+        const sheetName = "Kiln SEC 26";
+        const worksheet = workbook.Sheets[sheetName];
+
+        if (!worksheet) {
+            throw new Error(
+                '"' + sheetName + '" sayfası bulunamadı.'
+            );
+        }
+
+        if (!isSavedFile) {
+            await saveKpiWorkbook(file);
+        }
+
+        const rows = XLSX.utils.sheet_to_json(worksheet, {
+            header: 1,
+            defval: ""
+        });
+
+        const table = document.createElement("table");
+        table.style.cssText =
+            "border-collapse:collapse;width:100%;font-size:12px;";
+
+        rows.slice(0, 15).forEach(function(row) {
+            const tr = document.createElement("tr");
+
+            row.slice(0, 12).forEach(function(cell) {
+                const td = document.createElement("td");
+
+                td.style.cssText =
+                    "border:1px solid #d7deea;padding:6px;white-space:nowrap;";
+                td.textContent = String(cell);
+                tr.appendChild(td);
+            });
+
+            table.appendChild(tr);
+        });
+
+        preview.replaceChildren(table);
+
+        const savedText = isSavedFile
+            ? "Kayıtlı Excel otomatik yüklendi."
+            : "Excel kaydedildi ve okundu.";
+
+        status.textContent =
+            savedText + " Dosya: " + file.name +
+            " | Sayfa: " + sheetName +
+            " | İlk 15 satır ve 12 sütun önizleniyor.";
+
+    } catch (error) {
+        status.textContent =
+            "Excel işlemi başarısız: " + error.message;
+    }
+}
+
+document.getElementById("readExcelButton")
+    .addEventListener("click", async function() {
+        const fileInput = document.getElementById("excelFile");
+        const status = document.getElementById("excelStatus");
+
+        if (!fileInput.files.length) {
+            status.textContent = "Lütfen önce bir Excel dosyası seçin.";
+            return;
+        }
+
+        await displayKpiWorkbook(fileInput.files[0], false);
+    });
+
+(async function restoreKpiWorkbook() {
+    const status = document.getElementById("excelStatus");
+
+    try {
+        const record = await loadKpiWorkbook();
+
+        if (record && record.file) {
+            await displayKpiWorkbook(record.file, true);
+        } else {
+            status.textContent =
+                "Henüz kayıtlı Excel yok. İlk yükleme için dosyanızı seçin.";
+        }
+    } catch (error) {
+        status.textContent =
+            "Kayıtlı Excel yüklenemedi: " + error.message;
+    }
+})();
+document.getElementById("toggleExcelImportButton").addEventListener("click", function () {
+    const importPanel = document.getElementById("excel-import");
+
+    if (importPanel.style.display === "none") {
+        importPanel.style.display = "block";
+    } else {
+        importPanel.style.display = "none";
+    }
+});
+</script>
+
+
 </body>
 </html>
