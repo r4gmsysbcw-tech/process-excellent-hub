@@ -339,7 +339,9 @@
     <div id="excelStatus" class="muted" style="margin-top: 14px;">
         Henüz bir Excel dosyası seçilmedi.
     </div>
-
+<div id="excelFileInfo" class="muted" style="margin-top: 8px;">
+    Kayıtlı dosya bilgileri hazırlanıyor...
+</div>
 <div id="excelPreview" style="display:none;"></div>
 
 </section>
@@ -500,14 +502,29 @@ async function displayKpiWorkbook(file, isSavedFile) {
 
         preview.replaceChildren(table);
 
-        const savedText = isSavedFile
-            ? "Kayıtlı Excel otomatik yüklendi."
-            : "Excel kaydedildi ve okundu.";
+        
+const savedText = isSavedFile
+    ? "Kayıtlı Excel otomatik yüklendi."
+    : "Excel kaydedildi ve okundu.";
 
-        status.textContent =
-            savedText + " Dosya: " + file.name +
-            " | Sayfa: " + sheetName +
-            " | İlk 15 satır ve 12 sütun önizleniyor.";
+const fileInfo = document.getElementById("excelFileInfo");
+const record = isSavedFile ? await loadKpiWorkbook() : null;
+
+if (fileInfo) {
+    const importedDate = record && record.importedAt
+        ? new Date(record.importedAt).toLocaleString("tr-TR")
+        : new Date().toLocaleString("tr-TR");
+
+    fileInfo.textContent =
+        "Dosya adı: " + file.name +
+        " | Son aktarım: " + importedDate;
+}
+
+status.textContent =
+    savedText + " Dosya: " + file.name +
+    " | Sayfa: " + sheetName +
+    " | İlk 15 satır ve 12 sütun önizleniyor.";
+
 
     } catch (error) {
         status.textContent =
