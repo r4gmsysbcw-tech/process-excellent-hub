@@ -210,7 +210,7 @@
     </style>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -346,17 +346,22 @@
 
 </section>
 
-            <section class="panel" id="kiln">
-                <h2>Proses Performans Grafikleri</h2>
-                <div class="muted">
-                    Ekipman, ay ve yıl seçimlerine göre analiz alanı
-                </div>
+            
+<section class="panel" id="kiln">
+    <h2>Döner Fırınlar – Özgül Elektrik Tüketimi</h2>
+    <div class="muted">
+        DF1 ve DF2 aylık özgül elektrik tüketimi (kWh/ton)
+    </div>
 
-                <div class="chart-placeholder">
-                    Excel verileri henüz yüklenmedi.<br>
-                    Bu alana doğrulanmış KPI verileri ve grafikler eklenecek.
-                </div>
-            </section>
+    <div style="height: 360px; margin-top: 20px;">
+        <canvas id="kilnEnergyChart"></canvas>
+    </div>
+
+    <div id="kilnChartStatus" class="muted" style="margin-top: 12px;">
+        Grafik için Excel verileri hazırlanıyor.
+    </div>
+</section>
+
         </main>
     </div>
 
@@ -480,6 +485,132 @@ async function displayKpiWorkbook(file, isSavedFile) {
             header: 1,
             defval: ""
         });
+
+const kilnChartStatus = document.getElementById("kilnChartStatus");
+if (kilnChartStatus) {
+    kilnChartStatus.textContent =
+        "Excel sayfası okundu. DF1 ve DF2 aylık kWh/ton verileri hazırlanıyor.";
+}
+
+const kilnMonths = [
+    "Ocak", "Şubat", "Mart", "Nisan",
+    "Mayıs", "Haziran", "Temmuz", "Ağustos",
+    "Eylül", "Ekim", "Kasım", "Aralık"
+];
+
+function getKilnMonthlyValue(rowNumber, columnNumber) {
+    const cellAddress = XLSX.utils.encode_cell({
+        r: rowNumber - 1,
+        c: columnNumber - 1
+    });
+
+    const cell = worksheet[cellAddress];
+
+    if (!cell || cell.v === undefined || cell.v === null || cell.v === "") {
+        return null;
+    }
+
+    let value = cell.v;
+
+    if (typeof value === "string") {
+        value = value.trim();
+
+        if (value.includes(",")) {
+            value = value.replace(/\./g, "").replace(",", ".");
+        }
+
+        value = Number(value);
+    }
+
+    if (!Number.isFinite(value) || value <= 0) {
+        return null;
+    }
+
+    return value;
+}
+
+const df1Monthly = [];
+const df2Monthly = [];
+
+for (let columnNumber = 9; columnNumber <= 20; columnNumber++) {
+    df1Monthly.push(getKilnMonthlyValue(8, columnNumber));
+    df2Monthly.push(getKilnMonthlyValue(15, columnNumber));
+}
+
+const kilnCanvas = document.getElementById("kilnEnergyChart");
+
+if (kilnCanvas && typeof Chart !== "undefined") {
+    if (window.kilnEnergyChartInstance) {
+        window.kilnEnergyChartInstance.destroy();
+    }
+
+    window.kilnEnergyChartInstance = new Chart(kilnCanvas, {
+        type: "line",
+        data: {
+            labels: kilnMonths,
+            datasets: [
+                {
+                    label: "DF1 (kWh/ton)",
+                    data: df1Monthly,
+                    backgroundColor: "#2f75b5"
+                },
+                {
+                    label: "DF2 (kWh/ton)",
+                    data: df2Monthly,
+                    backgroundColor: "#ed7d31"
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: "index",
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    position: "top"
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ": " +
+                                (context.parsed.y === null
+                                    ? "Veri yok"
+                                    : context.parsed.y.toLocaleString("tr-TR", {
+                                        maximumFractionDigits: 2
+                                    }));
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Ay"
+                    }
+                },
+                y: {
+    min: 25,
+    title: {
+                        display: true,
+                        text: "Özgül elektrik tüketimi (kWh/ton)"
+                    }
+                }
+            }
+        }
+    });
+
+    if (kilnChartStatus) {
+        kilnChartStatus.textContent =
+            "DF1 ve DF2 aylık kWh/ton grafiği Excel verilerinden oluşturuldu.";
+    }
+} else if (kilnChartStatus) {
+    kilnChartStatus.textContent =
+        "Grafik kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edin.";
+}
 
         const table = document.createElement("table");
         table.style.cssText =
