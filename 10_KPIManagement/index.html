@@ -255,16 +255,20 @@
                 <div class="filter">
                     <label for="equipment">Ekipman</label>
                     <select id="equipment">
-                        <option value="all">Tüm ekipmanlar</option>
-                        <option value="DF1">DF1</option>
-                        <option value="DF2">DF2</option>
-                        <option value="FD1">FD1</option>
-                        <option value="FD2">FD2</option>
-                        <option value="CM1">CM1</option>
-                        <option value="CM2">CM2</option>
-                        <option value="CM3">CM3</option>
-                        <option value="CM4">CM4</option>
-                    </select>
+    <option value="all">Tüm ekipmanlar</option>
+    <option value="DF1">Döner Fırın 1 (DF1)</option>
+    <option value="DF2">Döner Fırın 2 (DF2)</option>
+    <option value="FD1">Farin Değirmeni 1 (FD1)</option>
+    <option value="FD2">Farin Değirmeni 2 (FD2)</option>
+    <option value="FD3">Farin Değirmeni 3 (FD3)</option>
+    <option value="KD1">Kömür Değirmeni 1 (KD1)</option>
+    <option value="KD2">Kömür Değirmeni 2 (KD2)</option>
+    <option value="CM1">Çimento Değirmeni 1 (CM1)</option>
+    <option value="CM2">Çimento Değirmeni 2 (CM2)</option>
+    <option value="CM3">Çimento Değirmeni 3 (CM3)</option>
+    <option value="CM4">Çimento Değirmeni 4 (CM4)</option>
+    <option value="CM5">Çimento Değirmeni 5 (CM5)</option>
+</select>
                 </div>
 
                 <div class="filter">
@@ -298,23 +302,23 @@
             </section>
 
             <section class="overview" id="overview">
-                <div class="metric">
-                    <div class="metric-title">Üretim</div>
-                    <div class="metric-value">—</div>
-                    <div class="muted">ton</div>
-                </div>
+                        <div class="metric">
+            <div class="metric-title">YTD Gerçekleşme</div>
+            <div class="metric-value" id="ytdActual">—</div>
+            <div class="muted">kWh/ton</div>
+        </div>
 
-                <div class="metric">
-                    <div class="metric-title">Özgül Enerji Tüketimi</div>
-                    <div class="metric-value">—</div>
-                    <div class="muted">kWh/ton</div>
-                </div>
+        <div class="metric">
+            <div class="metric-title">YTD Bütçe</div>
+            <div class="metric-value" id="ytdBudget">—</div>
+            <div class="muted">kWh/ton</div>
+        </div>
 
-                <div class="metric">
-                    <div class="metric-title">Kapasite</div>
-                    <div class="metric-value">—</div>
-                    <div class="muted">ton/saat veya tpd</div>
-                </div>
+        <div class="metric">
+            <div class="metric-title">KPI Skoru</div>
+            <div class="metric-value" id="kpiScore">—</div>
+            <div class="muted">%</div>
+        </div>
             </section>
 
 <section class="panel" id="excel-import" style="display: none; margin-bottom: 22px; min-height: auto;">
@@ -348,9 +352,9 @@
 
             
 <section class="panel" id="kiln">
-    <h2>Döner Fırınlar – Özgül Elektrik Tüketimi</h2>
+    <h2 id="kilnChartTitle">Döner Fırınlar – Özgül Elektrik Tüketimi</h2>
     <div class="muted">
-        DF1 ve DF2 aylık özgül elektrik tüketimi (kWh/ton)
+        <span id="kilnChartDescription">DF1 ve DF2 aylık özgül elektrik tüketimi (kWh/ton)</span>
     </div>
 
     <div style="height: 360px; margin-top: 20px;">
@@ -468,8 +472,20 @@ async function displayKpiWorkbook(file, isSavedFile) {
             type: "array"
         });
 
-        const sheetName = "Kiln SEC 26";
-        const worksheet = workbook.Sheets[sheetName];
+        const selectedYear = document.getElementById("year").value;
+const selectedEquipment = document.getElementById("equipment").value;
+
+let sheetName;
+
+if (selectedEquipment.startsWith("CM")) {
+    sheetName = selectedYear === "2026"
+        ? "Grinding 2026"
+        : "Grinding " + selectedYear;
+} else {
+    sheetName = "Kiln SEC " + selectedYear.slice(-2);
+}
+
+const worksheet = workbook.Sheets[sheetName];
 
         if (!worksheet) {
             throw new Error(
@@ -486,11 +502,6 @@ async function displayKpiWorkbook(file, isSavedFile) {
             defval: ""
         });
 
-const kilnChartStatus = document.getElementById("kilnChartStatus");
-if (kilnChartStatus) {
-    kilnChartStatus.textContent =
-        "Excel sayfası okundu. DF1 ve DF2 aylık kWh/ton verileri hazırlanıyor.";
-}
 
 const kilnMonths = [
     "Ocak", "Şubat", "Mart", "Nisan",
@@ -529,14 +540,160 @@ function getKilnMonthlyValue(rowNumber, columnNumber) {
     return value;
 }
 
-const df1Monthly = [];
-const df2Monthly = [];
 
-for (let columnNumber = 9; columnNumber <= 20; columnNumber++) {
-    df1Monthly.push(getKilnMonthlyValue(8, columnNumber));
-    df2Monthly.push(getKilnMonthlyValue(15, columnNumber));
+let equipmentLabel = selectedEquipment;
+let monthlyData = [];
+let dataRow = null;
+
+if (selectedEquipment === "DF1") {
+    equipmentLabel = "Döner Fırın 1 (DF1)";
+    dataRow = 8;
+} else if (selectedEquipment === "DF2") {
+    equipmentLabel = "Döner Fırın 2 (DF2)";
+    dataRow = 15;
+} else if (selectedEquipment === "CM1") {
+    equipmentLabel = "Çimento Değirmeni 1 (CM1)";
+    dataRow = 7;
+} else if (selectedEquipment === "CM2") {
+    equipmentLabel = "Çimento Değirmeni 2 (CM2)";
+    dataRow = 14;
+} else if (selectedEquipment === "CM3") {
+    equipmentLabel = "Çimento Değirmeni 3 (CM3)";
+    dataRow = 21;
+} else if (selectedEquipment === "CM4") {
+    equipmentLabel = "Çimento Değirmeni 4 (CM4)";
+    dataRow = 28;
+} else if (selectedEquipment === "CM5") {
+    equipmentLabel = "Çimento Değirmeni 5 (CM5)";
+    dataRow = 35;
 }
 
+if (dataRow !== null) {
+    let firstMonthColumn;
+let lastMonthColumn;
+    let ytdColumn;
+    let budgetColumn;
+
+    if (selectedEquipment.startsWith("CM")) {
+        if (selectedYear === "2026") {
+            ytdColumn = 9;      // I
+            budgetColumn = 22;  // V
+        } else if (selectedYear === "2025") {
+            ytdColumn = 8;      // H
+            budgetColumn = 21;  // U
+        } else if (selectedYear === "2024") {
+            ytdColumn = 7;      // G
+            budgetColumn = 20;  // T
+        } else if (selectedYear === "2023") {
+            ytdColumn = 6;      // F
+            budgetColumn = 19;  // S
+        }
+    } else {
+        if (selectedYear === "2026") {
+            ytdColumn = 8;      // H
+            budgetColumn = 21;  // U
+        } else if (selectedYear === "2025") {
+            ytdColumn = 7;      // G
+            budgetColumn = 20;  // T
+        } else if (selectedYear === "2024") {
+            ytdColumn = 6;      // F
+            budgetColumn = 19;  // S
+        } else if (selectedYear === "2023") {
+            ytdColumn = 5;      // E
+            budgetColumn = 18;  // R
+        }
+    }
+            const ytdActual = getKilnMonthlyValue(dataRow, ytdColumn);
+        const ytdBudget = getKilnMonthlyValue(dataRow, budgetColumn);
+
+        const actualElement = document.getElementById("ytdActual");
+        const budgetElement = document.getElementById("ytdBudget");
+        const scoreElement = document.getElementById("kpiScore");
+
+        if (actualElement) {
+            actualElement.textContent =
+                ytdActual === null ? "Veri yok" :
+                ytdActual.toLocaleString("tr-TR", {
+                    maximumFractionDigits: 2
+                });
+        }
+
+        if (budgetElement) {
+            budgetElement.textContent =
+                ytdBudget === null ? "Veri yok" :
+                ytdBudget.toLocaleString("tr-TR", {
+                    maximumFractionDigits: 2
+                });
+        }
+
+        if (scoreElement) {
+            if (ytdActual !== null && ytdBudget !== null && ytdActual !== 0) {
+                const score = (ytdBudget - ytdActual) / ytdActual * 100;
+
+                scoreElement.textContent =
+                    score.toLocaleString("tr-TR", {
+                        maximumFractionDigits: 2
+                    }) + "%";
+
+                scoreElement.style.color =
+                    score > 0 ? "#16a34a" :
+                    score < 0 ? "#eab308" : "";
+            } else {
+                scoreElement.textContent = "Veri yok";
+                scoreElement.style.color = "";
+            }
+        }
+if (selectedEquipment.startsWith("CM")) {
+    if (selectedYear === "2026") {
+        firstMonthColumn = 10; // J
+        lastMonthColumn = 21;  // U
+    } else if (selectedYear === "2025") {
+        firstMonthColumn = 9;  // I
+        lastMonthColumn = 20;  // T
+    } else if (selectedYear === "2024") {
+        firstMonthColumn = 8;  // H
+        lastMonthColumn = 19;  // S
+    } else if (selectedYear === "2023") {
+        firstMonthColumn = 7;  // G
+        lastMonthColumn = 18;  // R
+    }
+} else {
+    if (selectedYear === "2026") {
+        firstMonthColumn = 9;  // I
+        lastMonthColumn = 20;  // T
+    } else if (selectedYear === "2025") {
+        firstMonthColumn = 8;  // H
+        lastMonthColumn = 19;  // S
+    } else if (selectedYear === "2024") {
+        firstMonthColumn = 7;  // G
+        lastMonthColumn = 18;  // R
+    } else if (selectedYear === "2023") {
+        firstMonthColumn = 6;  // F
+        lastMonthColumn = 17;  // Q
+    }
+}
+
+    for (
+        let columnNumber = firstMonthColumn;
+        columnNumber <= lastMonthColumn;
+        columnNumber++
+    ) {
+        monthlyData.push(getKilnMonthlyValue(dataRow, columnNumber));
+    }
+} else {
+    monthlyData = Array(12).fill(null);
+}
+const titleElement = document.getElementById("kilnChartTitle");
+const descriptionElement = document.getElementById("kilnChartDescription");
+
+if (titleElement) {
+    titleElement.textContent = equipmentLabel + " – Özgül Elektrik Tüketimi";
+}
+
+if (descriptionElement) {
+    descriptionElement.textContent =
+        equipmentLabel + " aylık özgül elektrik tüketimi (kWh/ton)";
+}
 const kilnCanvas = document.getElementById("kilnEnergyChart");
 
 if (kilnCanvas && typeof Chart !== "undefined") {
@@ -545,21 +702,16 @@ if (kilnCanvas && typeof Chart !== "undefined") {
     }
 
     window.kilnEnergyChartInstance = new Chart(kilnCanvas, {
-        type: "line",
+        type: "bar",
         data: {
             labels: kilnMonths,
             datasets: [
-                {
-                    label: "DF1 (kWh/ton)",
-                    data: df1Monthly,
-                    backgroundColor: "#2f75b5"
-                },
-                {
-                    label: "DF2 (kWh/ton)",
-                    data: df2Monthly,
-                    backgroundColor: "#ed7d31"
-                }
-            ]
+    {
+        label: equipmentLabel + " (kWh/ton)",
+        data: monthlyData,
+        backgroundColor: "#2f75b5"
+    }
+]
         },
         options: {
             responsive: true,
@@ -593,7 +745,7 @@ if (kilnCanvas && typeof Chart !== "undefined") {
                     }
                 },
                 y: {
-    min: 25,
+    min: 15,
     title: {
                         display: true,
                         text: "Özgül elektrik tüketimi (kWh/ton)"
@@ -603,10 +755,6 @@ if (kilnCanvas && typeof Chart !== "undefined") {
         }
     });
 
-    if (kilnChartStatus) {
-        kilnChartStatus.textContent =
-            "DF1 ve DF2 aylık kWh/ton grafiği Excel verilerinden oluşturuldu.";
-    }
 } else if (kilnChartStatus) {
     kilnChartStatus.textContent =
         "Grafik kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edin.";
@@ -692,6 +840,21 @@ document.getElementById("readExcelButton")
         status.textContent =
             "Kayıtlı Excel yüklenemedi: " + error.message;
     }
+  document.getElementById("year").addEventListener("change", async function () {
+    const record = await loadKpiWorkbook();
+
+    if (record && record.file) {
+        await displayKpiWorkbook(record.file, true);
+    }
+});
+
+document.getElementById("equipment").addEventListener("change", async function () {
+    const record = await loadKpiWorkbook();
+
+    if (record && record.file) {
+        await displayKpiWorkbook(record.file, true);
+    }
+});  
 })();
 document.getElementById("toggleExcelImportButton").addEventListener("click", function () {
     const importPanel = document.getElementById("excel-import");
