@@ -211,6 +211,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 </head>
 
 <body>
@@ -706,12 +708,17 @@ if (kilnCanvas && typeof Chart !== "undefined") {
         data: {
             labels: kilnMonths,
             datasets: [
-    {
-        label: equipmentLabel + " (kWh/ton)",
-        data: monthlyData,
-        backgroundColor: "#2f75b5"
-    }
-]
+{
+    label: equipmentLabel + " (kWh/ton)",
+    data: monthlyData,
+    backgroundColor: monthlyData.map((value, index) => {
+        if (value === null || index === 0 || monthlyData[index - 1] === null) {
+            return "#f59e0b";
+        }
+
+        return value < monthlyData[index - 1] ? "#16a34a" : "#f59e0b";
+    })
+}]
         },
         options: {
             responsive: true,
@@ -724,6 +731,19 @@ if (kilnCanvas && typeof Chart !== "undefined") {
                 legend: {
                     position: "top"
                 },
+                datalabels: {
+    anchor: "end",
+    align: "end",
+    formatter: function(value) {
+        return value === null ? "" : value.toLocaleString("tr-TR", {
+            maximumFractionDigits: 2
+        });
+    },
+    font: {
+        weight: "bold",
+        size: 10
+    }
+},
                 tooltip: {
                     callbacks: {
                         label: function(context) {
@@ -746,6 +766,7 @@ if (kilnCanvas && typeof Chart !== "undefined") {
                 },
                 y: {
     min: 15,
+    max: 50,
     title: {
                         display: true,
                         text: "Özgül elektrik tüketimi (kWh/ton)"
