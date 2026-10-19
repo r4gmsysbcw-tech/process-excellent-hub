@@ -269,6 +269,9 @@
     <option value="CM3">Çimento Değirmeni 3 (CM3)</option>
     <option value="CM4">Çimento Değirmeni 4 (CM4)</option>
     <option value="CM5">Çimento Değirmeni 5 (CM5)</option>
+    <option value="TOTAL_KILN">Toplam Fırınlar</option>
+<option value="TOTAL_RAW">Toplam Farin Değirmenleri</option>
+<option value="TOTAL_COAL">Toplam Kömür Değirmenleri</option>
 </select>
                 </div>
 
@@ -511,6 +514,9 @@ const kilnMonths = [
 ];
 
 function getKilnMonthlyValue(rowNumber, columnNumber) {
+    if (columnNumber == null) return null;
+
+if (rowNumber == null) return null;
     const cellAddress = XLSX.utils.encode_cell({
         r: rowNumber - 1,
         c: columnNumber - 1
@@ -545,7 +551,7 @@ function getKilnMonthlyValue(rowNumber, columnNumber) {
 let equipmentLabel = selectedEquipment;
 let monthlyData = [];
 let dataRow = null;
-
+let firstMonthColumn;
 if (selectedEquipment === "DF1") {
     equipmentLabel = "Döner Fırın 1 (DF1)";
     dataRow = 8;
@@ -567,15 +573,47 @@ if (selectedEquipment === "DF1") {
 } else if (selectedEquipment === "CM5") {
     equipmentLabel = "Çimento Değirmeni 5 (CM5)";
     dataRow = 35;
-}
+    }
+     else if (selectedEquipment === "TOTAL_KILN") {
+    equipmentLabel = "Toplam Fırın";
+    dataRow = 56;
+} else if (selectedEquipment === "TOTAL_RAW") {
+    equipmentLabel = "Toplam Farin Değirmenleri";
+    dataRow = 57;
+} else if (selectedEquipment === "TOTAL_COAL") {
+    equipmentLabel = "Toplam Kömür Değirmenleri";
+    dataRow = 55;
+   } else if (selectedEquipment === "FD1") {
+    equipmentLabel = "Farin Değirmeni 1 (FD1)";
+    dataRow = 22;
+} else if (selectedEquipment === "FD2") {
+    equipmentLabel = "Farin Değirmeni 2 (FD2)";
+    dataRow = 29;
+} else if (selectedEquipment === "FD3") {
+    equipmentLabel = "Farin Değirmeni 3 (FD3)";
+    dataRow = 36;
+} else if (selectedEquipment === "KD1") {
+    equipmentLabel = "Kömür Değirmeni 1 (KD1)";
+    dataRow = 43;
+} else if (selectedEquipment === "KD2") {
+    equipmentLabel = "Kömür Değirmeni 2 (KD2)";
+    dataRow = 50;
+} 
 
 if (dataRow !== null) {
-    let firstMonthColumn;
 let lastMonthColumn;
     let ytdColumn;
     let budgetColumn;
-
-    if (selectedEquipment.startsWith("CM")) {
+if (
+    selectedEquipment === "TOTAL_KILN" ||
+    selectedEquipment === "TOTAL_RAW" ||
+    selectedEquipment === "TOTAL_COAL"
+) {
+    if (selectedYear === "2026" || selectedYear === "2025") {
+        ytdColumn = selectedYear === "2026" ? 8 : 7;
+        budgetColumn = selectedYear === "2026" ? 21 : 20;
+    }
+} else if (selectedEquipment.startsWith("CM")) {
         if (selectedYear === "2026") {
             ytdColumn = 9;      // I
             budgetColumn = 22;  // V
@@ -604,6 +642,16 @@ let lastMonthColumn;
             budgetColumn = 18;  // R
         }
     }
+    if (
+    (selectedEquipment === "TOTAL_KILN" ||
+     selectedEquipment === "TOTAL_RAW" ||
+     selectedEquipment === "TOTAL_COAL") &&
+    selectedYear !== "2025" &&
+    selectedYear !== "2026"
+) {
+    ytdColumn = null;
+    budgetColumn = null;
+}
             const ytdActual = getKilnMonthlyValue(dataRow, ytdColumn);
         const ytdBudget = getKilnMonthlyValue(dataRow, budgetColumn);
 
@@ -706,19 +754,48 @@ Chart.register(ChartDataLabels);
         type: "bar",
         data: {
             labels: kilnMonths,
-            datasets: [
-{
-    label: equipmentLabel + " (kWh/ton)",
-    data: monthlyData,
-    backgroundColor: monthlyData.map((value, index) => {
-        if (value === null || index === 0 || monthlyData[index - 1] === null) {
-            return "#f59e0b";
-        }
+datasets: (() => {
+  const combinedGroups = {
+    TOTAL_KILN: [
+      { label: "Döner Fırın 1 (DF1)", row: 8 },
+      { label: "Döner Fırın 2 (DF2)", row: 15 },
+      { label: "Toplam Fırınlar", row: 56 }
+    ],
+    TOTAL_RAW: [
+      { label: "Farin Değirmeni 1 (FD1)", row: 22 },
+      { label: "Farin Değirmeni 2 (FD2)", row: 29 },
+      { label: "Farin Değirmeni 3 (FD3)", row: 36 },
+      { label: "Toplam Farin Değirmenleri", row: 57 }
+    ],
+    TOTAL_COAL: [
+      { label: "Kömür Değirmeni 1 (KD1)", row: 43 },
+      { label: "Kömür Değirmeni 2 (KD2)", row: 50 },
+      { label: "Toplam Kömür Değirmenleri", row: 55 }
+    ]
+  };
 
+  const group = combinedGroups[selectedEquipment];
+
+  if (!group) {
+    return [{
+      label: equipmentLabel + " (kWh/ton)",
+      data: monthlyData,
+      backgroundColor: monthlyData.map((value, index) => {
+        if (value === null || index === 0 || monthlyData[index - 1] === null) {
+          return "#f59e0b";
+        }
         return value < monthlyData[index - 1] ? "#16a34a" : "#f59e0b";
-    })
-}]
-        },
+      })
+    }];
+  }
+
+  return group.map(item => ({
+    label: item.label + " (kWh/ton)",
+    data: Array.from({ length: 12 }, (_, index) =>
+      getKilnMonthlyValue(item.row, firstMonthColumn + index)
+    )
+  }));
+})()        },
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -765,8 +842,9 @@ Chart.register(ChartDataLabels);
                 },
                 y: {
     min: 15,
-    max: 50,
-    title: {
+max: selectedEquipment.startsWith("FD") ? 30 :
+     selectedEquipment.startsWith("KD") ? 65 : 50,    
+     title: {
                         display: true,
                         text: "Özgül elektrik tüketimi (kWh/ton)"
                     }
