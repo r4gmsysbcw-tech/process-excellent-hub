@@ -268,6 +268,7 @@
     <option value="CM3">Çimento Değirmeni 3 (CM3)</option>
     <option value="CM4">Çimento Değirmeni 4 (CM4)</option>
     <option value="CM5">Çimento Değirmeni 5 (CM5)</option>
+    <option value="TOTAL_CEMENT">Toplam Klinker / Çimento</option>
     <option value="TOTAL_KILN">Toplam Fırınlar</option>
 <option value="TOTAL_RAW">Toplam Farin Değirmenleri</option>
 <option value="TOTAL_COAL">Toplam Kömür Değirmenleri</option>
@@ -480,14 +481,15 @@ const selectedEquipment = document.getElementById("equipment").value;
 
 let sheetName;
 
-if (selectedEquipment.startsWith("CM")) {
-    sheetName = selectedYear === "2026"
-        ? "Grinding 2026"
-        : "Grinding " + selectedYear;
+if (selectedEquipment === "TOTAL_CEMENT") {
+  sheetName = "TOD_KPI_" + selectedYear;
+} else if (selectedEquipment.startsWith("CM")) {
+  sheetName = selectedYear === "2026"
+    ? "Grinding 2026"
+    : "Grinding " + selectedYear;
 } else {
-    sheetName = "Kiln SEC " + selectedYear.slice(-2);
+  sheetName = "Kiln SEC " + selectedYear.slice(-2);
 }
-
 const worksheet = workbook.Sheets[sheetName];
 
         if (!worksheet) {
@@ -516,6 +518,17 @@ function getKilnMonthlyValue(rowNumber, columnNumber) {
     if (columnNumber == null) return null;
 
 if (rowNumber == null) return null;
+if (selectedEquipment === "TOTAL_CEMENT") {
+  const cementCellAddress = XLSX.utils.encode_cell({
+    r: rowNumber - 1,
+    c: columnNumber - 1
+  });
+  const cementCell = worksheet[cementCellAddress];
+  if (!cementCell || cementCell.v == null || cementCell.v === "") {
+    return null;
+  }
+  return Number(cementCell.v);
+}
     const cellAddress = XLSX.utils.encode_cell({
         r: rowNumber - 1,
         c: columnNumber - 1
@@ -582,6 +595,9 @@ if (selectedEquipment === "DF1") {
 } else if (selectedEquipment === "TOTAL_COAL") {
     equipmentLabel = "Toplam Kömür Değirmenleri";
     dataRow = 55;
+    } else if (selectedEquipment === "TOTAL_CEMENT") {
+  equipmentLabel = "Toplam Klinker / Çimento";
+  dataRow = 13;
    } else if (selectedEquipment === "FD1") {
     equipmentLabel = "Farin Değirmeni 1 (FD1)";
     dataRow = 22;
@@ -603,7 +619,10 @@ if (dataRow !== null) {
 let lastMonthColumn;
     let ytdColumn;
     let budgetColumn;
-if (
+    if (selectedEquipment === "TOTAL_CEMENT") {
+  ytdColumn = 60;    // BH
+  budgetColumn = 67; // BO
+} else if (
     selectedEquipment === "TOTAL_KILN" ||
     selectedEquipment === "TOTAL_RAW" ||
     selectedEquipment === "TOTAL_COAL"
@@ -691,7 +710,10 @@ if (
                 scoreElement.style.color = "";
             }
         }
-if (selectedEquipment.startsWith("CM")) {
+if (selectedEquipment === "TOTAL_CEMENT") {
+      firstMonthColumn = 48; // AV
+  lastMonthColumn = 59;  // BG
+} else if (selectedEquipment.startsWith("CM")) {
     if (selectedYear === "2026") {
         firstMonthColumn = 10; // J
         lastMonthColumn = 21;  // U
@@ -770,7 +792,12 @@ datasets: (() => {
       { label: "Kömür Değirmeni 1 (KD1)", row: 43 },
       { label: "Kömür Değirmeni 2 (KD2)", row: 50 },
       { label: "Toplam Kömür Değirmenleri", row: 55 }
-    ]
+    ],
+    TOTAL_CEMENT: [
+  { label: "Clinker Energy Total Kiln", row: 11 },
+  { label: "Grinding Energy", row: 12 },
+  { label: "Total Cement Energy", row: 13 }
+]
   };
 
   const group = combinedGroups[selectedEquipment];
@@ -841,11 +868,12 @@ datasets: (() => {
                 },
                 y: {
     min: 15,
-max: selectedEquipment === "TOTAL_RAW" ? 30 :
+max: selectedEquipment === "TOTAL_CEMENT" ? 140 :
+     selectedEquipment === "TOTAL_RAW" ? 30 :
      selectedEquipment === "TOTAL_COAL" ? 65 :
      selectedEquipment.startsWith("FD") ? 30 :
      selectedEquipment.startsWith("KD") ? 65 : 50,
-          title: {
+               title: {
                         display: true,
                         text: "Özgül elektrik tüketimi (kWh/ton)"
                     }
