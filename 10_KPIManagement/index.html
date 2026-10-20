@@ -254,9 +254,8 @@
 
             <section class="filters">
                 <div class="filter">
-                    <label for="equipment">Ekipman</label>
+                    <label for="equipment">Üniteler</label>
                     <select id="equipment">
-    <option value="all">Tüm ekipmanlar</option>
     <option value="DF1">Döner Fırın 1 (DF1)</option>
     <option value="DF2">Döner Fırın 2 (DF2)</option>
     <option value="FD1">Farin Değirmeni 1 (FD1)</option>
@@ -842,9 +841,11 @@ datasets: (() => {
                 },
                 y: {
     min: 15,
-max: selectedEquipment.startsWith("FD") ? 30 :
-     selectedEquipment.startsWith("KD") ? 65 : 50,    
-     title: {
+max: selectedEquipment === "TOTAL_RAW" ? 30 :
+     selectedEquipment === "TOTAL_COAL" ? 65 :
+     selectedEquipment.startsWith("FD") ? 30 :
+     selectedEquipment.startsWith("KD") ? 65 : 50,
+          title: {
                         display: true,
                         text: "Özgül elektrik tüketimi (kWh/ton)"
                     }
