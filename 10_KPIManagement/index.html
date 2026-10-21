@@ -319,9 +319,13 @@
         </div>
 
         <div class="metric">
-            <div class="metric-title">KPI Skoru</div>
-            <div class="metric-value" id="kpiScore">—</div>
-            <div class="muted">%</div>
+
+<div class="metric-title">KPI Skoru</div>
+<div style="display:flex; align-items:center; gap:12px;">
+  <div class="metric-value" id="kpiScore">--</div>
+  <div id="kpiGauge" style="width:100px; height:60px; flex-shrink:0;"></div>
+</div>
+<div class="muted">%</div>
         </div>
             </section>
 
@@ -696,6 +700,33 @@ let lastMonthColumn;
         if (scoreElement) {
             if (ytdActual !== null && ytdBudget !== null && ytdActual !== 0) {
                 const score = (ytdBudget - ytdActual) / ytdActual * 100;
+
+const gauge = document.getElementById("kpiGauge");
+if (gauge) {
+  const value = Math.max(-15, Math.min(10, score));
+  const angle = 180 + ((value + 15) / 25) * 180;
+
+  gauge.innerHTML = `
+    <svg viewBox="0 0 120 72" width="100%" height="100%">
+      <path d="M 15 60 A 45 45 0 0 1 31 24"
+            fill="none" stroke="#dc2626" stroke-width="10"
+            stroke-linecap="butt"/>
+      <path d="M 31 24 A 45 45 0 0 1 48 16"
+            fill="none" stroke="#f97316" stroke-width="10"/>
+      <path d="M 48 16 A 45 45 0 0 1 66 15"
+            fill="none" stroke="#eab308" stroke-width="10"/>
+      <path d="M 66 15 A 45 45 0 0 1 88 24"
+            fill="none" stroke="#22c55e" stroke-width="10"/>
+      <path d="M 88 24 A 45 45 0 0 1 105 60"
+            fill="none" stroke="#15803d" stroke-width="10"/>
+      <line x1="60" y1="60"
+            x2="${60 + 35 * Math.cos(angle * Math.PI / 180)}"
+            y2="${60 + 35 * Math.sin(angle * Math.PI / 180)}"
+            stroke="#1e293b" stroke-width="3"
+            stroke-linecap="round"/>
+      <circle cx="60" cy="60" r="5" fill="#1e293b"/>
+    </svg>`;
+}
 
                 scoreElement.textContent =
                     score.toLocaleString("tr-TR", {
