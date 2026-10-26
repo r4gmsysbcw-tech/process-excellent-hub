@@ -570,7 +570,7 @@ async function loadKpiWorkbook() {
     });
 }
 
-async function displayKpiWorkbook(file, isSavedFile) {
+async function displayKpiWorkbook(file, isSavedFile, mainKpiOnly = false) {
     const status = document.getElementById("excelStatus");
     const preview = document.getElementById("excelPreview");
 
@@ -589,7 +589,11 @@ const selectedEquipment = document.getElementById("equipment").value;
 
 let sheetName;
 
-if (selectedEquipment === "TOTAL_CEMENT") {
+if (
+    mainKpiOnly ||
+    document.body.classList.contains("main-kpi-page") ||
+    selectedEquipment === "TOTAL_CEMENT"
+) {
     sheetName = "TOD_KPI_" + selectedYear;
 } else if (selectedEquipment.startsWith("CM")) {
     sheetName = selectedYear === "2026"
@@ -621,10 +625,11 @@ const mainKpiRows = {
     kiln1Heat: 19,
     kiln2Heat: 20,
     totalKilnHeat: 21,
+    "kiln1Pet coke": 25,
+    "kiln2Pet coke": 32,
+    kiln2AF: 33,
     kiln1MTBS: 48,
-    kiln2MTBS: 49,
-    kiln1PetCoke: 25,
-    kiln2PetCoke: 32
+    kiln2MTBS: 49
 };
 function getMainKpiValue(rowNumber, columnLetter) {
     const cellAddress = columnLetter + rowNumber;
@@ -674,6 +679,264 @@ function getMainKpiParameterData(parameterKey) {
         ytd: getMainKpiYtdValue(rowNumber),
         budget: getMainKpiBudgetValue(rowNumber)
     };
+}
+function renderMainKpiChart() {
+    if (!document.body.classList.contains("main-kpi-page")) {
+        return;
+    }
+
+    const selector = document.getElementById("mainKpiParameter");
+    const parameterKey = selector.value;
+    const parameterLabel = selector.options[selector.selectedIndex].text;
+    const data = getMainKpiParameterData(parameterKey);
+    const chartCanvas = document.getElementById("mainKpiChart");
+
+    if (!data || !chartCanvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    const percentParameters = [
+        "totalClinker",
+        "kiln1Reliability",
+        "kiln2Reliability",
+        "kiln1Pet coke",
+        "kiln2Pet coke",
+        "kiln2AF"
+    ];
+
+    const units = {
+        totalClinker: "%",
+        kiln1Reliability: "%",
+        kiln2Reliability: "%",
+        kiln1Heat: "kcal/kgck",
+        kiln2Heat: "kcal/kgck",
+        totalKilnHeat: "kcal/kgck",
+        "kiln1Pet coke": "%",
+        "kiln2Pet coke": "%",
+        kiln2AF: "%",
+        kiln1MTBS: "",
+        kiln2MTBS: ""
+    };
+
+    const isPercent = percentParameters.includes(parameterKey);
+    const unit = units[parameterKey] || "";
+    const displayValue = value => {
+        if (value === null || value === undefined) {
+            return "Veri yok";
+        }
+
+        const shownValue = isPercent ? value * 100 : value;
+        return shownValue.toLocaleString("tr-TR", {
+            maximumFractionDigits: 2
+        });
+    };
+
+    document.getElementById("mainKpiYtdActual").textContent =
+        displayValue(data.ytd);
+    document.getElementById("mainKpiYtdBudget").textContent =
+        displayValue(data.budget);
+
+    document.getElementById("mainKpiYtdActual")
+        .nextElementSibling.textContent = unit;
+    document.getElementById("mainKpiYtdBudget")
+        .nextElementSibling.textContent = unit;
+
+    let score = null;
+
+    if (data.ytd !== null && data.budget !== null) {
+        if (parameterKey === "totalClinker") {
+            score = (data.budget - data.ytd) * 100;
+        } else if (
+            parameterKey === "kiln1Reliability" ||
+            parameterKey === "kiln2Reliability" ||
+            parameterKey === "kiln1Pet coke" ||
+            parameterKey === "kiln2Pet coke" ||
+            parameterKey === "kiln2AF"
+        ) {
+            score = (data.ytd - data.budget) * 100;
+        } else if (
+            parameterKey === "kiln1Heat" ||
+            parameterKey === "kiln2Heat" ||
+            parameterKey === "totalKilnHeat"
+        ) {
+            if (data.budget !== 0) {
+                score = (1 - data.ytd / data.budget) * 100;
+            }
+        } else if (
+            parameterKey === "kiln1MTBS" ||
+            parameterKey === "kiln2MTBS"
+        ) {
+            if (data.ytd !== 0) {
+                score = (1 - data.budget / data.ytd) * 100;
+            }
+        }
+    }
+
+    const scoreElement = document.getElementById("mainKpiScore");
+    const gauge = document.getElementById("mainKpiGauge");
+
+    if (score !== null && Number.isFinite(score)) {
+        scoreElement.textContent =
+            score.toLocaleString("tr-TR", {
+                maximumFractionDigits: 2
+            }) + "%";
+        scoreElement.style.color =
+            score > 0 ? "#16a34a" :
+            score < 0 ? "#eab308" : "";
+
+        const gaugeValue = Math.max(-15, Math.min(10, score));
+        const angle = 180 + ((gaugeValue + 15) / 25) * 180;
+
+        gauge.innerHTML = `
+            <svg viewBox="0 0 120 72" width="100%" height="100%">
+                <path d="M 15 60 A 45 45 0 0 1 31 24"
+                      fill="none" stroke="#dc2626" stroke-width="10"/>
+                <path d="M 31 24 A 45 45 0 0 1 48 16"
+                      fill="none" stroke="#f97316" stroke-width="10"/>
+                <path d="M 48 16 A 45 45 0 0 1 66 15"
+                      fill="none" stroke="#eab308" stroke-width="10"/>
+                <path d="M 66 15 A 45 45 0 0 1 88 24"
+                      fill="none" stroke="#22c55e" stroke-width="10"/>
+                <path d="M 88 24 A 45 45 0 0 1 105 60"
+                      fill="none" stroke="#15803d" stroke-width="10"/>
+                <line x1="60" y1="60"
+                      x2="${60 + 35 * Math.cos(angle * Math.PI / 180)}"
+                      y2="${60 + 35 * Math.sin(angle * Math.PI / 180)}"
+                      stroke="#1e293b" stroke-width="3"
+                      stroke-linecap="round"/>
+                <circle cx="60" cy="60" r="5" fill="#1e293b"/>
+            </svg>`;
+    } else {
+        scoreElement.textContent = "Veri yok";
+        scoreElement.style.color = "";
+        gauge.innerHTML = "";
+    }
+
+    const monthlyValues = data.monthly.map(value =>
+        value === null ? null : (isPercent ? value * 100 : value)
+    );
+
+const higherIsBetterParameters = [
+    "kiln1Reliability",
+    "kiln2Reliability",
+    "kiln1MTBS",
+    "kiln2MTBS",
+    "kiln1Pet coke",
+    "kiln2Pet coke",
+    "kiln2AF"
+];
+
+const isHigherBetter = higherIsBetterParameters.includes(parameterKey);
+
+const barColors = monthlyValues.map((value, index) => {
+    if (
+        value === null ||
+        index === 0 ||
+        monthlyValues[index - 1] === null
+    ) {
+        return "#f59e0b";
+    }
+
+    const isIncreasing = value > monthlyValues[index - 1];
+    const isFavorable = isHigherBetter ? isIncreasing : !isIncreasing;
+
+    return isFavorable ? "#16a34a" : "#f59e0b";
+});
+    document.getElementById("mainKpiChartTitle").textContent =
+        parameterLabel + " – Aylık Performans";
+    document.getElementById("mainKpiChartDescription").textContent =
+        parameterLabel + " aylık gerçekleşmeleri (" + unit + ")";
+
+    if (window.mainKpiChartInstance) {
+        window.mainKpiChartInstance.destroy();
+    }
+const mainKpiYAxisRanges = {
+    totalClinker: { min: 70, max: 95 },
+    kiln1Reliability: { min: 80, max: 105 },
+    kiln2Reliability: { min: 80, max: 105 },
+    kiln1Heat: { min: 740, max: 900 },
+    kiln2Heat: { min: 740, max: 900 },
+    totalKilnHeat: { min: 740, max: 900 },
+    kiln1MTBS: { min: 0 },
+kiln2MTBS: { min: 0 },
+    "kiln1Pet coke": { min: 30, max: 95 },
+    "kiln2Pet coke": { min: 30, max: 95 },
+    kiln2AF: { min: 0, max: 50 }
+};
+    window.mainKpiChartInstance = new Chart(chartCanvas, {
+        type: "bar",
+        data: {
+            labels: kilnMonths,
+            datasets: [{
+                label: parameterLabel + (isPercent ? " (%)" : ""),
+                data: monthlyValues,
+                backgroundColor: barColors,
+                borderColor: barColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: "top" },
+                datalabels: {
+                    anchor: "end",
+                    align: "end",
+                    formatter: value =>
+                        value === null ? "" :
+                        value.toLocaleString("tr-TR", {
+                            maximumFractionDigits: 2
+                        }),
+                    font: {
+                        weight: "bold",
+                        size: 10
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Ay"
+                    }
+                },
+                y: {
+                    ...mainKpiYAxisRanges[parameterKey],
+                    title: {
+                        display: true,
+                        text: unit
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}
+window.renderMainKpiChart = renderMainKpiChart;
+renderMainKpiChart();
+if (mainKpiOnly) {
+    const status = document.getElementById("excelStatus");
+    const fileInfo = document.getElementById("excelFileInfo");
+    const record = isSavedFile ? await loadKpiWorkbook() : null;
+
+    if (fileInfo) {
+        const importedDate = record && record.importedAt
+            ? new Date(record.importedAt).toLocaleString("tr-TR")
+            : new Date().toLocaleString("tr-TR");
+
+        fileInfo.textContent =
+            "Dosya adı: " + file.name +
+            " | Son aktarım: " + importedDate;
+    }
+
+    if (status) {
+        status.textContent = isSavedFile
+            ? "Kayıtlı Excel otomatik yüklendi. Dosya: " + file.name
+            : "Excel kaydedildi ve okundu. Dosya: " + file.name;
+    }
+
+    return;
 }
 function getKilnMonthlyValue(rowNumber, columnNumber) {
     if (columnNumber == null) return null;
@@ -1136,7 +1399,11 @@ document.getElementById("readExcelButton")
             return;
         }
 
-        await displayKpiWorkbook(fileInput.files[0], false);
+        await displayKpiWorkbook(
+    fileInput.files[0],
+    false,
+    document.body.classList.contains("main-kpi-page")
+);
     });
 
 (async function restoreKpiWorkbook() {
@@ -1159,7 +1426,11 @@ document.getElementById("readExcelButton")
     const record = await loadKpiWorkbook();
 
     if (record && record.file) {
-        await displayKpiWorkbook(record.file, true);
+        await displayKpiWorkbook(
+    record.file,
+    true,
+    document.body.classList.contains("main-kpi-page")
+);
     }
 });
 
@@ -1167,10 +1438,20 @@ document.getElementById("equipment").addEventListener("change", async function (
     const record = await loadKpiWorkbook();
 
     if (record && record.file) {
-        await displayKpiWorkbook(record.file, true);
+        await displayKpiWorkbook(
+    record.file,
+    true,
+    document.body.classList.contains("main-kpi-page")
+);
     }
 });  
 })();
+document.getElementById("mainKpiParameter")
+    .addEventListener("change", function () {
+        if (window.renderMainKpiChart) {
+            window.renderMainKpiChart();
+        }
+    });
 document.getElementById("toggleExcelImportButton").addEventListener("click", function () {
     const importPanel = document.getElementById("excel-import");
 
@@ -1184,6 +1465,21 @@ document.querySelectorAll(".sidebar .menu-item").forEach(function (link) {
   link.addEventListener("click", function (event) {
     const target = link.getAttribute("href");
 document.body.classList.toggle("main-kpi-page", target === "#mainKpiOverview");
+if (target === "#mainKpiOverview") {
+    loadKpiWorkbook()
+        .then(function (record) {
+            if (record && record.file) {
+                return displayKpiWorkbook(record.file, true, true);
+            }
+        })
+        .catch(function (error) {
+            const status = document.getElementById("excelStatus");
+            if (status) {
+                status.textContent =
+                    "Kayıtlı Excel yüklenemedi: " + error.message;
+            }
+        });
+}
     if (target !== "#overview" && target !== "#mainKpiOverview") {
       return;
     }
