@@ -207,6 +207,60 @@
                 padding: 16px;
             }
         }
+        /* Main KPI ve Genel Bakış sayfalarını ayır */
+.main-kpi-filter {
+    display: none;
+}
+
+#mainKpiChartPanel {
+    display: none;
+}
+
+body.main-kpi-page .main-kpi-filter {
+    display: block;
+}
+
+body.main-kpi-page #mainKpiParameter {
+    display: block;
+}
+
+
+body.main-kpi-page #mainKpiChartPanel {
+    display: block;
+}
+
+body.main-kpi-page .overview-filter {
+    display: none;
+}
+
+body.main-kpi-page .year-filter {
+    display: block;
+}
+body.main-kpi-page #mainKpiOverview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+body.main-kpi-page #mainKpiOverview .metric {
+    min-width: 0;
+    margin: 0;
+}
+body.main-kpi-page #chartPanel {
+    display: none;
+}
+body.main-kpi-page #mainKpiChartPanel {
+    display: block;
+}
+
+body.main-kpi-page #chartPanel,
+body.main-kpi-page .chart-panel:not(.main-kpi-chart-panel) {
+    display: none !important;
+}
+body.main-kpi-page #kiln {
+    display: none !important;
+}
     </style>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -229,6 +283,7 @@
             <a class="menu-item" href="#total">Toplam Klinker / Çimento</a>
             <a class="menu-item" href="#grinding">Öğütme Performansı</a>
             <a class="menu-item" href="#products">Ürün Bazlı 2026</a>
+            <a class="menu-item" href="#mainKpiOverview">Main KPI</a>
         </aside>
 
         <main class="main">
@@ -253,7 +308,25 @@
             </header>
 
             <section class="filters">
-                <div class="filter">
+
+<div class="filter main-kpi-filter">
+  <label for="mainKpiParameter">KPI Parametresi</label>
+  <select id="mainKpiParameter">
+    <option value="totalClinker">Toplam klinker kullanımı</option>
+    <option value="kiln1Reliability">Fırın 1 güvenilirlik faktörü</option>
+    <option value="kiln2Reliability">Fırın 2 güvenilirlik faktörü</option>
+    <option value="kiln1Heat">Fırın 1 Isı Tüketimi</option>
+    <option value="kiln2Heat">Fırın 2 Isı Tüketimi</option>
+    <option value="totalKilnHeat">Toplam fırınlar Isı Tüketimi</option>
+    <option value="kiln1Pet coke">Fırın 1 Petrokok Kullanımı</option>
+    <option value="kiln2Pet coke">Fırın 2 Petrokok Kullanımı</option>
+    <option value="kiln2AF">Fırın 2 AF Kullanımı</option>
+    <option value="kiln1MTBS">Fırın 1 MTBS</option>
+    <option value="kiln2MTBS">Fırın 2 MTBS</option>
+  </select>
+</div>
+
+                <div class="filter overview-filter">
                     <label for="equipment">Üniteler</label>
                     <select id="equipment">
     <option value="DF1">Döner Fırın 1 (DF1)</option>
@@ -275,7 +348,7 @@
 </select>
                 </div>
 
-                <div class="filter">
+                <div class="filter overview-filter">
                     <label for="month">Ay</label>
                     <select id="month">
                         <option value="all">Tüm aylar</option>
@@ -294,7 +367,7 @@
                     </select>
                 </div>
 
-                <div class="filter">
+                <div class="filter year-filter">
                     <label for="year">Yıl</label>
                     <select id="year">
                         <option value="2026">2026</option>
@@ -328,7 +401,38 @@
 <div class="muted">%</div>
         </div>
             </section>
+            <section class="overview" id="mainKpiOverview" style="display: none;">
+                        <div class="metric">
+            <div class="metric-title">YTD Gerçekleşme</div>
+            <div class="metric-value" id="mainKpiYtdActual">—</div>
+            <div class="muted">kWh/ton</div>
+        </div>
 
+        <div class="metric">
+            <div class="metric-title">YTD Bütçe</div>
+            <div class="metric-value" id="mainKpiYtdBudget">—</div>
+            <div class="muted">kWh/ton</div>
+        </div>
+
+        <div class="metric">
+
+<div class="metric-title">KPI Skoru</div>
+<div style="display:flex; align-items:center; gap:12px;">
+  <div class="metric-value" id="mainKpiScore">--</div>
+  <div id="mainKpiGauge" style="width:100px; height:60px; flex-shrink:0;"></div>
+</div>
+<div class="muted">%</div>
+        </div>
+            </section>
+<section class="panel main-kpi-chart-panel" id="mainKpiChartPanel">
+    <h2 id="mainKpiChartTitle">Main KPI – Aylık Performans</h2>
+    <div class="muted" id="mainKpiChartDescription">
+        Seçilen KPI parametresinin aylık gerçekleşmeleri
+    </div>
+    <div style="height: 360px; margin-top: 20px;">
+        <canvas id="mainKpiChart"></canvas>
+    </div>
+</section>
 <section class="panel" id="excel-import" style="display: none; margin-bottom: 22px; min-height: auto;">
     <h2>Excel KPI Verisi Aktarımı</h2>
     <p class="muted">
@@ -486,16 +590,15 @@ const selectedEquipment = document.getElementById("equipment").value;
 let sheetName;
 
 if (selectedEquipment === "TOTAL_CEMENT") {
-  sheetName = "TOD_KPI_" + selectedYear;
+    sheetName = "TOD_KPI_" + selectedYear;
 } else if (selectedEquipment.startsWith("CM")) {
-  sheetName = selectedYear === "2026"
-    ? "Grinding 2026"
-    : "Grinding " + selectedYear;
+    sheetName = selectedYear === "2026"
+        ? "Grinding 2026"
+        : "Grinding " + selectedYear;
 } else {
-  sheetName = "Kiln SEC " + selectedYear.slice(-2);
+    sheetName = "Kiln SEC " + selectedYear.slice(-2);
 }
 const worksheet = workbook.Sheets[sheetName];
-
         if (!worksheet) {
             throw new Error(
                 '"' + sheetName + '" sayfası bulunamadı.'
@@ -511,13 +614,67 @@ const worksheet = workbook.Sheets[sheetName];
             defval: ""
         });
 
+const mainKpiRows = {
+    totalClinker: 14,
+    kiln1Reliability: 17,
+    kiln2Reliability: 18,
+    kiln1Heat: 19,
+    kiln2Heat: 20,
+    totalKilnHeat: 21,
+    kiln1MTBS: 48,
+    kiln2MTBS: 49,
+    kiln1PetCoke: 25,
+    kiln2PetCoke: 32
+};
+function getMainKpiValue(rowNumber, columnLetter) {
+    const cellAddress = columnLetter + rowNumber;
+    const cell = worksheet[cellAddress];
 
+    if (!cell || cell.v === undefined || cell.v === null || cell.v === "") {
+        return null;
+    }
+
+    const value = Number(cell.v);
+    return Number.isFinite(value) ? value : null;
+}
+
+function getMainKpiMonthlyValues(rowNumber) {
+    const monthlyColumns = [
+        "AV", "AW", "AX", "AY", "AZ", "BA",
+        "BB", "BC", "BD", "BE", "BF", "BG"
+    ];
+
+    return monthlyColumns.map(column =>
+        getMainKpiValue(rowNumber, column)
+    );
+}
+
+function getMainKpiYtdValue(rowNumber) {
+    return getMainKpiValue(rowNumber, "BH");
+}
+
+function getMainKpiBudgetValue(rowNumber) {
+    return getMainKpiValue(rowNumber, "BO");
+}
 const kilnMonths = [
     "Ocak", "Şubat", "Mart", "Nisan",
     "Mayıs", "Haziran", "Temmuz", "Ağustos",
     "Eylül", "Ekim", "Kasım", "Aralık"
 ];
 
+function getMainKpiParameterData(parameterKey) {
+    const rowNumber = mainKpiRows[parameterKey];
+
+    if (rowNumber === undefined) {
+        return null;
+    }
+
+    return {
+        monthly: getMainKpiMonthlyValues(rowNumber),
+        ytd: getMainKpiYtdValue(rowNumber),
+        budget: getMainKpiBudgetValue(rowNumber)
+    };
+}
 function getKilnMonthlyValue(rowNumber, columnNumber) {
     if (columnNumber == null) return null;
 
@@ -1022,6 +1179,27 @@ document.getElementById("toggleExcelImportButton").addEventListener("click", fun
     } else {
         importPanel.style.display = "none";
     }
+});
+document.querySelectorAll(".sidebar .menu-item").forEach(function (link) {
+  link.addEventListener("click", function (event) {
+    const target = link.getAttribute("href");
+document.body.classList.toggle("main-kpi-page", target === "#mainKpiOverview");
+    if (target !== "#overview" && target !== "#mainKpiOverview") {
+      return;
+    }
+
+    event.preventDefault();
+
+    document.getElementById("overview").style.display =
+      target === "#overview" ? "" : "none";
+
+    document.getElementById("mainKpiOverview").style.display =
+      target === "#mainKpiOverview" ? "" : "none";
+
+    document.querySelectorAll(".sidebar .menu-item").forEach(function (item) {
+      item.classList.toggle("active", item === link);
+    });
+  });
 });
 </script>
 
