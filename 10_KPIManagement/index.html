@@ -273,6 +273,206 @@ body.main-kpi-page .chart-panel:not(.main-kpi-chart-panel) {
 body.main-kpi-page #kiln {
     display: none !important;
 }
+/* KPI Özeti için ayrılmış görünüm */
+#kpiSummaryView {
+    width: 100%;
+}
+
+body.kpi-summary-page .main > :not(.topbar):not(#kpiSummaryView) {
+    display: none !important;
+}
+
+body.kpi-summary-page #toggleExcelImportButton {
+    display: none !important;
+}
+
+#kpiSummaryView .summary-content {
+    min-width: 0;
+}
+
+#kpiSummaryView .summary-header {
+    margin-bottom: 22px;
+}
+
+#kpiSummaryView .summary-header h1 {
+    margin: 0 0 6px;
+    color: #142338;
+    font-size: 30px;
+}
+
+#kpiSummaryView .summary-header p,
+#kpiSummaryView .summary-muted {
+    color: #65758b;
+}
+
+#kpiSummaryView .summary-top {
+    display: grid;
+        position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #f4f6f9;
+    grid-template-columns: minmax(220px, 0.65fr) minmax(420px, 2.15fr);
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+#kpiSummaryView .summary-statuses {
+    display: grid;
+    gap: 16px;
+}
+
+#kpiSummaryView .summary-card {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #dce4ee;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 5px 16px rgba(23, 38, 56, 0.06);
+}
+
+#kpiSummaryView .summary-status-card {
+    display: flex;
+    min-height: 118px;
+    align-items: center;
+    gap: 16px;
+}
+
+#kpiSummaryView .summary-status-icon {
+    display: grid;
+    width: 60px;
+    height: 60px;
+    flex: 0 0 60px;
+    place-items: center;
+    border-radius: 12px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+#kpiSummaryView .summary-status-icon.good {
+    color: #16803c;
+    background: #e1f5e8;
+}
+
+#kpiSummaryView .summary-status-icon.action {
+    color: #d83232;
+    background: #fde8e8;
+}
+
+#kpiSummaryView .summary-chart-area {
+    display: flex;
+    height: 220px;
+    align-items: end;
+    justify-content: space-around;
+    gap: 24px;
+    margin-top: 18px;
+    padding: 12px 24px 0;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+#kpiSummaryView .summary-bar-column {
+    display: flex;
+    width: 24%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    gap: 8px;
+    color: #65758b;
+    text-align: center;
+}
+
+#kpiSummaryView .summary-bar {
+    width: min(100%, 82px);
+    height: 48%;
+    min-height: 12px;
+    border-radius: 6px 6px 0 0;
+    background: #9db5d3;
+}
+
+#kpiSummaryView .summary-bar-column:nth-child(2) .summary-bar {
+    height: 65%;
+    background: #477bb8;
+}
+
+#kpiSummaryView .summary-bar-column:nth-child(3) .summary-bar {
+    height: 55%;
+    background: #7189a8;
+}
+
+#kpiSummaryView .summary-table-card {
+    overflow: hidden;
+}
+
+#kpiSummaryView .summary-table-wrap {
+    overflow-x: auto;
+    margin-top: 14px;
+}
+
+#kpiSummaryView .summary-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+#kpiSummaryView .summary-table th,
+#kpiSummaryView .summary-table td {
+    padding: 10px 9px;
+    border: 1px solid #dce4ee;
+    text-align: left;
+    white-space: nowrap;
+}
+
+#kpiSummaryView .summary-table thead th {
+    color: #26384f;
+    background: #e8eef5;
+}
+
+#kpiSummaryView .summary-table .summary-group td {
+    color: #203a5b;
+    background: #e4eefb;
+    font-weight: 700;
+}
+#kpiSummaryView .summary-status-pill {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+#kpiSummaryView .summary-status-pill.target {
+    color: #166534;
+    background: #dcfce7;
+}
+
+#kpiSummaryView .summary-status-pill.watch {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+#kpiSummaryView .summary-status-pill.action {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+#kpiSummaryView .summary-table .summary-selected td {
+    background: #f0f6ff;
+}
+
+@media (max-width: 950px) {
+    #kpiSummaryView .summary-top {
+        grid-template-columns: 1fr;
+    }
+
+    #kpiSummaryView .summary-statuses {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    #kpiSummaryView .summary-statuses {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -360,6 +560,13 @@ body.main-kpi-page #kiln {
         <path d="M17 20V4" />
     </svg>
     <span>Main KPI</span>
+</a>
+<a class="menu-item" href="#kpiSummaryView">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="5" y="4" width="14" height="17" rx="2" />
+        <path d="M9 4V2h6v2M9 10h6M9 14h6M9 18h4" />
+    </svg>
+    <span>KPI Özeti</span>
 </a>
         </aside>
 
@@ -554,7 +761,160 @@ body.main-kpi-page #kiln {
         Grafik için Excel verileri hazırlanıyor.
     </div>
 </section>
+<section id="kpiSummaryView" style="display: none;">
+    <div class="summary-content">
+                    <header class="summary-header">
+                <h1>KPI Özeti</h1>
+                <p>Pro-Target Project • YTD performans özeti</p>
+                <button
+    id="summaryToggleImportButton"
+    type="button"
+    style="display: none; margin-top: 12px; padding: 8px 12px; border: 0; border-radius: 6px; color: #fff; background: #244d76; cursor: pointer;"
+>
+    Excel'i Güncelle
+</button>
+            </header>
+            <div id="summaryExcelSavedInfo" class="summary-muted" style="display: none; margin-bottom: 14px;"></div>
+<section id="summaryExcelImportPanel" class="summary-card" style="margin-bottom: 18px;">
+    <h2>Excel KPI verisini yükle</h2>
+    <p class="summary-muted">
+        Pro-Target Project verilerini bu sayfa için ayrı olarak seçin.
+        Dosya GitHub'a yüklenmez.
+    </p>
 
+    <label for="summaryExcelFile">TOD KPI Excel dosyası (.xlsx)</label>
+    <input
+        type="file"
+        id="summaryExcelFile"
+        accept=".xlsx,.xls"
+        style="display: block; margin-top: 10px; margin-bottom: 14px;"
+    >
+
+    <button
+        type="button"
+        id="summaryReadExcelButton"
+        style="padding: 10px 16px; border: 0; border-radius: 7px; color: white; background: #2165d5; cursor: pointer;"
+    >
+        Excel'i Kaydet ve Oku
+    </button>
+
+    <div id="summaryExcelStatus" class="summary-muted" style="margin-top: 12px;">
+        Henüz bu sayfa için Excel seçilmedi.
+    </div>
+    <div id="summaryExcelInfo" class="summary-muted" style="margin-top: 6px;"></div>
+</section>
+            <div class="summary-top">
+                <section class="summary-statuses" aria-label="KPI durum özeti">
+                    <article class="summary-card summary-status-card">
+                        <div class="summary-status-icon good" aria-hidden="true">✓</div>
+                        <div>
+                            <h2>Hedef İçinde</h2>
+                            <div id="summaryTargetCount" class="summary-status-value">—</div>
+                        </div>
+                    </article>
+
+                    <article class="summary-card summary-status-card">
+                        <div class="summary-status-icon action" aria-hidden="true">!</div>
+                        <div>
+                            <h2>Aksiyon Gereken</h2>
+                            <div id="summaryActionCount" class="summary-status-value">—</div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="summary-card summary-chart-card">
+                    <h2 id="summaryChartTitle">Seçili KPI Performansı</h2>
+<div id="summaryChartDescription" class="summary-muted">
+    Tablodan KPI seçildiğinde grafik burada gösterilecek
+</div>
+<div style="height: 150px; margin-top: 18px;">
+    <canvas id="summaryKpiChart"></canvas>
+</div>
+                    <p class="summary-chart-note">Excel verileri sonraki adımda bağlanacak.</p>
+                </section>
+            </div>
+
+            <section class="summary-card summary-table-card">
+                <h2>KPI Performansı</h2>
+                <div class="summary-muted">Pro-Target Project verilerinin özeti</div>
+
+                <div class="summary-table-wrap">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>KPI / Kategori</th>
+                                <th>Birim</th>
+                                <th>2026 YTD</th>
+                                <th>Bütçe</th>
+                                <th>Geçen Yıl</th>
+                                <th>Sapma</th>
+                                <th>Durum</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryKpiTableBody">
+                            <tr class="summary-group"><td colspan="8">ÜRETİM</td></tr>
+                            <tr class="summary-selected">
+                                <td>Klinker Üretimi DF1</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                            </tr>
+                            <tr>
+                                <td>Klinker Üretimi DF2</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                            </tr>
+
+                            <tr class="summary-group"><td colspan="8">ENERJİ VE TÜKETİM</td></tr>
+                            <tr>
+                                <td>Toplam Fırın Klinker Enerjisi</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                            </tr>
+                            <tr>
+                                <td>Öğütme Enerjisi</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                            </tr>
+
+                            <tr class="summary-group"><td colspan="8">GÜVENİLİRLİK VE YAKITLAR</td></tr>
+                            <tr>
+                                <td>Fırın 1 Güvenilirlik Faktörü</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                                <td class="summary-placeholder">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+    </div>
+</section>
         </main>
     </div>
 
@@ -1542,6 +1902,13 @@ document.querySelectorAll(".sidebar .menu-item").forEach(function (link) {
   link.addEventListener("click", function (event) {
     const target = link.getAttribute("href");
 document.body.classList.toggle("main-kpi-page", target === "#mainKpiOverview");
+document.body.classList.toggle("kpi-summary-page", target === "#kpiSummaryView");
+
+const summaryView = document.getElementById("kpiSummaryView");
+if (summaryView) {
+    summaryView.style.display =
+        target === "#kpiSummaryView" ? "block" : "none";
+}
 if (target === "#mainKpiOverview") {
     loadKpiWorkbook()
         .then(function (record) {
@@ -1557,10 +1924,13 @@ if (target === "#mainKpiOverview") {
             }
         });
 }
-    if (target !== "#overview" && target !== "#mainKpiOverview") {
+    if (
+      target !== "#overview" &&
+      target !== "#mainKpiOverview" &&
+      target !== "#kpiSummaryView"
+    ) {
       return;
     }
-
     event.preventDefault();
 
     document.getElementById("overview").style.display =
@@ -1574,6 +1944,680 @@ if (target === "#mainKpiOverview") {
     });
   });
 });
+const KPI_SUMMARY_DATABASE = "ProcessExcellentHubKPISummary";
+const KPI_SUMMARY_STORE = "summaryWorkbooks";
+const KPI_SUMMARY_RECORD_ID = "current";
+
+function openKpiSummaryDatabase() {
+    return new Promise(function (resolve, reject) {
+        const request = indexedDB.open(KPI_SUMMARY_DATABASE, 1);
+
+        request.onupgradeneeded = function () {
+            const database = request.result;
+
+            if (!database.objectStoreNames.contains(KPI_SUMMARY_STORE)) {
+                database.createObjectStore(KPI_SUMMARY_STORE, {
+                    keyPath: "id"
+                });
+            }
+        };
+
+        request.onsuccess = function () {
+            resolve(request.result);
+        };
+
+        request.onerror = function () {
+            reject(request.error);
+        };
+    });
+}
+
+async function saveKpiSummaryWorkbook(file) {
+    const data = await file.arrayBuffer();
+    const database = await openKpiSummaryDatabase();
+
+    const record = {
+        id: KPI_SUMMARY_RECORD_ID,
+        name: file.name,
+        importedAt: new Date().toISOString(),
+        data: data
+    };
+
+    return new Promise(function (resolve, reject) {
+        const transaction = database.transaction(
+            KPI_SUMMARY_STORE,
+            "readwrite"
+        );
+
+        transaction.objectStore(KPI_SUMMARY_STORE).put(record);
+
+        transaction.oncomplete = function () {
+            database.close();
+            resolve(record);
+        };
+
+        transaction.onerror = function () {
+            database.close();
+            reject(transaction.error);
+        };
+
+        transaction.onabort = function () {
+            database.close();
+            reject(transaction.error);
+        };
+    });
+}
+
+async function loadKpiSummaryWorkbook() {
+    const database = await openKpiSummaryDatabase();
+
+    return new Promise(function (resolve, reject) {
+        const transaction = database.transaction(
+            KPI_SUMMARY_STORE,
+            "readonly"
+        );
+
+        const request = transaction
+            .objectStore(KPI_SUMMARY_STORE)
+            .get(KPI_SUMMARY_RECORD_ID);
+
+        request.onsuccess = function () {
+            resolve(request.result || null);
+        };
+
+        request.onerror = function () {
+            reject(request.error);
+        };
+
+        transaction.oncomplete = function () {
+            database.close();
+        };
+
+        transaction.onerror = function () {
+            database.close();
+            reject(transaction.error);
+        };
+    });
+}
+function parseKpiSummaryWorkbookData(arrayBuffer) {
+    if (typeof XLSX === "undefined") {
+        throw new Error("Excel okuma kitaplığı yüklenemedi.");
+    }
+
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    const worksheet = workbook.Sheets["Pro-Target Project"];
+
+    if (!worksheet || !worksheet["!ref"]) {
+        throw new Error("Excel dosyasında Pro-Target Project sayfası bulunamadı.");
+    }
+
+    const range = XLSX.utils.decode_range(worksheet["!ref"]);
+
+    function readCell(rowIndex, columnIndex) {
+        const address = XLSX.utils.encode_cell({
+            r: rowIndex,
+            c: columnIndex
+        });
+        const cell = worksheet[address];
+
+        if (
+            !cell ||
+            cell.t === "e" ||
+            cell.v === undefined ||
+            cell.v === null ||
+            cell.v === ""
+        ) {
+            return null;
+        }
+
+        return cell.v;
+    }
+
+    const rows = [];
+
+    for (let rowIndex = 5; rowIndex <= range.e.r; rowIndex++) {
+        const name = readCell(rowIndex, 6);
+
+        if (name === null || String(name).trim() === "") {
+            continue;
+        }
+
+        rows.push({
+            excelRow: rowIndex + 1,
+            name: String(name).trim(),
+            unit: readCell(rowIndex, 7),
+            ytd: readCell(rowIndex, 65),
+            budget: readCell(rowIndex, 66),
+            lastYear: readCell(rowIndex, 67),
+            deviation: readCell(rowIndex, 69),
+            explanation: readCell(rowIndex, 70)
+        });
+    }
+
+    renderKpiSummaryTable(rows);
+    return rows;
+}
+let summaryKpiChartInstance = null;
+
+function renderSummaryKpiChart(row, label, unit) {
+    const canvas = document.getElementById("summaryKpiChart");
+    const title = document.getElementById("summaryChartTitle");
+    const description = document.getElementById("summaryChartDescription");
+    const note = document.querySelector("#kpiSummaryView .summary-chart-note");
+
+    if (!canvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    const multiplier = unit === "%" ? 100 : 1;
+    const chartValues = [row.ytd, row.budget, row.lastYear].map(function (value) {
+        if (value === null || value === undefined || value === "") {
+            return null;
+        }
+
+        const number = Number(value);
+        return Number.isFinite(number) ? number * multiplier : null;
+    });
+    const validChartValues = chartValues.filter(function (value) {
+        return value !== null;
+    });
+    const highestChartValue = validChartValues.length > 0
+        ? Math.max(...validChartValues)
+        : 0;
+    const yAxisMax = highestChartValue > 0
+        ? highestChartValue * 1.15
+        : 1;
+    if (title) {
+        title.textContent = label + " – KPI Performansı";
+    }
+
+    if (description) {
+        description.textContent = unit ? label + " • " + unit : label;
+    }
+
+    if (note) {
+        note.style.display = "none";
+    }
+
+    if (summaryKpiChartInstance) {
+        summaryKpiChartInstance.destroy();
+    }
+
+    const suffix = unit === "%" ? "%" : "";
+
+    summaryKpiChartInstance = new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+            labels: ["2026 YTD", "Bütçe", "Geçen Yıl"],
+            datasets: [{
+                label: label,
+                data: chartValues,
+                backgroundColor: ["#9db5d3", "#477bb8", "#7189a8"],
+                borderRadius: 6,
+                maxBarThickness: 82
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                datalabels: {
+                    display: function (context) {
+                        return context.dataset.data[context.dataIndex] !== null;
+                    },
+                    anchor: "end",
+                    align: "top",
+                    formatter: function (value) {
+                        return Number(value).toLocaleString("tr-TR", {
+                            maximumFractionDigits: 2
+                        }) + suffix;
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: yAxisMax,
+                    ticks: {
+                        callback: function (value) {
+                            return Number(value).toLocaleString("tr-TR") + suffix;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+function renderKpiSummaryTable(rows) {
+    const tableBody = document.getElementById("summaryKpiTableBody");
+
+    if (!tableBody) {
+        return;
+    }
+
+    const turkishNames = {
+        "Clinker Production DF1": "Klinker Üretimi Fırın 1",
+        "Clinker Production DF2": "Klinker Üretimi Fırın 2",
+        "Cement Production": "Çimento Üretimi",
+        "Clinker Energy K1": "Klinker Enerjisi Fırın 1",
+        "Clinker Energy K2": "Klinker Enerjisi Fırın 2",
+        "Clinker Energy Total Kiln": "Toplam Fırın Klinker Enerjisi",
+        "Grinding Energy": "Öğütme Enerjisi",
+        "Total Cement Energy": "Toplam Çimento Enerjisi",
+        "Overall Clinker usage": "Toplam Klinker Kullanımı",
+        "DF1 Performance factor": "Fırın 1 Performans Faktörü",
+        "DF2 Performance factor": "Fırın 2 Performans Faktörü",
+        "DF1 Reliability factor": "Fırın 1 Güvenilirlik Faktörü",
+        "DF2 Reliability factor": "Fırın 2 Güvenilirlik Faktörü",
+        "DF1 Heat Consumption SHC": "Fırın 1 Isı Tüketimi",
+        "DF2 Heat Consumption SHC": "Fırın 2 Isı Tüketimi",
+        "Heat Consumption Total Kiln": "Toplam Fırın Isı Tüketimi",
+        "DF1 Local Coal Usage Ratio (calorific)": "Fırın 1 Yerli Kömür Kullanım Oranı",
+        "DF1 Import Usage Ratio": "Fırın 1 İthal Yakıt Kullanım Oranı",
+        "DF1 Petcoke Usage Ratio": "Fırın 1 Petrokok Kullanım Oranı",
+        "DF1 HS Petcoke Usage Ratio": "Fırın 1 Yüksek Kükürtlü Petrokok Kullanım Oranı",
+        "DF1 AF Usage Ratio": "Fırın 1 Alternatif Yakıt Kullanım Oranı",
+        "DF1 Fuel Oil Usage Ratio": "Fırın 1 Fuel Oil Kullanım Oranı",
+        "DF2 Local Coal Usage Ratio": "Fırın 2 Yerli Kömür Kullanım Oranı",
+        "DF2 Import Usage Ratio": "Fırın 2 İthal Yakıt Kullanım Oranı",
+        "DF2 Petcoke Usage Ratio": "Fırın 2 Petrokok Kullanım Oranı",
+        "DF2 HS Petcoke Usage Ratio": "Fırın 2 Yüksek Kükürtlü Petrokok Kullanım Oranı",
+        "DF2 AF Usage Ratio": "Fırın 2 Alternatif Yakıt Kullanım Oranı",
+        "DF2 Fuel Oil Usage Ratio": "Fırın 2 Fuel Oil Kullanım Oranı",
+        "Total Local Coal Usage Ratio": "Toplam Yerli Kömür Kullanım Oranı",
+        "Total Import Usage Ratio": "Toplam İthal Yakıt Kullanım Oranı",
+        "Total HS Petcoke Usage Ratio": "Toplam Yüksek Kükürtlü Petrokok Kullanım Oranı",
+        "Total AF Usage Ratio": "Toplam Alternatif Yakıt Kullanım Oranı",
+        "Total Fuel Oil Usage Ratio": "Toplam Fuel Oil Kullanım Oranı",
+        "Kiln 1 Throughput": "Fırın 1 Üretim Hızı",
+        "Kiln 2 Throughput": "Fırın 2 Üretim Hızı",
+        "Nominal capacity K1": "Fırın 1 Nominal Kapasitesi",
+        "Nominal capacity K2": "Fırın 2 Nominal Kapasitesi",
+        "Running hours-kiln K1": "Fırın 1 Çalışma Saati",
+        "Running hours-kiln K2": "Fırın 2 Çalışma Saati",
+        "MTBS K1": "Fırın 1 Duruşlar Arası Ortalama Süre",
+        "MTBS K2": "Fırın 2 Duruşlar Arası Ortalama Süre",
+        "CM1 Reliability": "Çimento Değirmeni 1 Güvenilirliği",
+        "CM2 Reliability": "Çimento Değirmeni 2 Güvenilirliği",
+        "CM3 Reliability": "Çimento Değirmeni 3 Güvenilirliği",
+        "CM4 Reliability": "Çimento Değirmeni 4 Güvenilirliği",
+        "CM5 Reliability": "Çimento Değirmeni 5 Güvenilirliği"
+    };
+
+    function getCategory(excelRow) {
+        if (excelRow <= 8) return "ÜRETİM";
+        if (excelRow <= 14) return "ENERJİ TÜKETİMİ";
+        if (excelRow <= 18) return "PERFORMANS VE GÜVENİLİRLİK";
+        if (excelRow <= 21) return "ISI TÜKETİMİ";
+        if (excelRow <= 40) return "YAKIT KULLANIMI";
+        if (excelRow <= 49) return "FIRIN OPERASYONLARI";
+        return "ÇİMENTO DEĞİRMENİ GÜVENİLİRLİĞİ";
+    }
+
+    function getUnit(row) {
+        if (row.unit === "%" || /Usage Ratio|Clinker usage/i.test(row.name)) {
+            return "%";
+        }
+
+        const units = {
+            "kWh/tCK": "kWh/t klinker",
+            "kWh/tcc": "kWh/t çimento",
+            "kcal/kg": "kcal/kg",
+            "t/d": "ton/gün",
+            "h": "saat",
+            "h/no of stop": "saat/duruş",
+            "ton": "ton"
+        };
+
+        return units[row.unit] || "—";
+    }
+
+    function formatNumber(value, isPercent) {
+        if (value === null || value === undefined || value === "") {
+            return "—";
+        }
+
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) {
+            return "—";
+        }
+
+        if (isPercent) {
+            return (number * 100).toLocaleString("tr-TR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + "%";
+        }
+
+        return number.toLocaleString("tr-TR", {
+            maximumFractionDigits: 2
+        });
+    }
+    function getSummaryStatus(row) {
+        const higherIsBetter = [
+            "Clinker Production DF1",
+            "Clinker Production DF2",
+            "Cement Production",
+            "DF1 Performance factor",
+            "DF2 Performance factor",
+            "DF1 Reliability factor",
+            "DF2 Reliability factor",
+            "DF1 HS Petcoke Usage Ratio",
+            "DF2 HS Petcoke Usage Ratio",
+            "DF1 AF Usage Ratio",
+            "DF2 AF Usage Ratio",
+            "Total HS Petcoke Usage Ratio",
+            "Total AF Usage Ratio",
+            "Kiln 1 Throughput",
+            "Kiln 2 Throughput",
+            "MTBS K1",
+            "MTBS K2"
+        ];
+
+        const lowerIsBetter = [
+            "Clinker Energy Total Kiln",
+            "Grinding Energy",
+            "Total Cement Energy",
+            "Overall Clinker usage",
+            "DF1 Heat Consumption SHC",
+            "DF2 Heat Consumption SHC",
+            "Heat Consumption Total Kiln"
+        ];
+
+        const ytd = row.ytd === null || row.ytd === undefined || row.ytd === ""
+            ? NaN
+            : Number(row.ytd);
+        const budget = row.budget === null || row.budget === undefined || row.budget === ""
+            ? NaN
+            : Number(row.budget);
+
+        if (!Number.isFinite(ytd) || !Number.isFinite(budget) || budget === 0) {
+            return { status: "—", explanation: "Bütçe veya gerçekleşen veri olmadığı için durum hesaplanamadı." };
+        }
+        const actualVsBudget = ((ytd - budget) / Math.abs(budget)) * 100;
+        let favorableDeviation;
+
+        if (higherIsBetter.includes(row.name)) {
+            favorableDeviation = actualVsBudget;
+        } else if (lowerIsBetter.includes(row.name)) {
+            favorableDeviation = -actualVsBudget;
+        } else {
+            return { status: "—", explanation: "Bu KPI için durum kuralı tanımlı değil." };
+        }
+
+        let status;
+
+        if (favorableDeviation >= 0) {
+            status = "Hedef İçinde";
+        } else if (favorableDeviation > -2) {
+            status = "İzle";
+        } else {
+            status = "Aksiyon Gerekli";
+        }
+
+        const difference = Math.abs(actualVsBudget);
+        const comparison = actualVsBudget > 0
+            ? `Bütçenin %${difference.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} üzerinde`
+            : actualVsBudget < 0
+                ? `Bütçenin %${difference.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} altında`
+                : "Bütçeyle aynı seviyede";
+
+        return {
+            status: status,
+            explanation: `${comparison}; ${status.toLocaleLowerCase("tr-TR")}.`
+        };
+    }
+    tableBody.replaceChildren();
+
+    let currentCategory = "";
+    let targetCount = 0;
+    let actionCount = 0;
+        const excludedSummaryRows = new Set([
+        "Clinker Energy K1",
+        "Clinker Energy K2",
+        "DF1 Local Coal Usage Ratio (calorific)",
+        "DF1 Import Usage Ratio",
+        "DF1 Petcoke Usage Ratio",
+        "DF1 Fuel Oil Usage Ratio",
+        "DF2 Local Coal Usage Ratio",
+        "DF2 Import Usage Ratio",
+        "DF2 Petcoke Usage Ratio",
+        "DF2 Fuel Oil Usage Ratio",
+        "Total Local Coal Usage Ratio",
+        "Total Import Usage Ratio",
+        "Total Fuel Oil Usage Ratio",
+        "Nominal capacity K1",
+        "Nominal capacity K2",
+        "Running hours-kiln K1",
+        "Running hours-kiln K2"
+    ]);
+
+    rows.filter(function (row) {
+        return !excludedSummaryRows.has(row.name);
+    }).forEach(function (row) {
+        const category = getCategory(row.excelRow);
+
+        if (category !== currentCategory) {
+            currentCategory = category;
+
+            const groupRow = document.createElement("tr");
+            groupRow.className = "summary-group";
+
+            const groupCell = document.createElement("td");
+            groupCell.colSpan = 8;
+            groupCell.textContent = category;
+
+            groupRow.appendChild(groupCell);
+            tableBody.appendChild(groupRow);
+        }
+
+        const unit = getUnit(row);
+        const isPercent = unit === "%";
+        const dataRow = document.createElement("tr");
+
+        const summaryStatus = getSummaryStatus(row);
+        if (summaryStatus.status === "Hedef İçinde") {
+            targetCount++;
+        } else if (summaryStatus.status === "Aksiyon Gerekli") {
+            actionCount++;
+        }
+        const values = [
+            turkishNames[row.name] || row.name,
+            unit,
+            formatNumber(row.ytd, isPercent),
+            formatNumber(row.budget, isPercent),
+            formatNumber(row.lastYear, isPercent),
+            formatNumber(row.deviation, true),
+            summaryStatus.status,
+            summaryStatus.explanation
+        ];
+        values.forEach(function (value, index) {
+            const cell = document.createElement("td");
+
+            if (index === 6) {
+                const statusPill = document.createElement("span");
+                statusPill.className = "summary-status-pill";
+
+                if (value === "Hedef İçinde") {
+                    statusPill.classList.add("target");
+                } else if (value === "İzle") {
+                    statusPill.classList.add("watch");
+                } else if (value === "Aksiyon Gerekli") {
+                    statusPill.classList.add("action");
+                }
+
+                statusPill.textContent = value;
+                cell.appendChild(statusPill);
+            } else {
+                cell.textContent = value;
+            }
+
+            dataRow.appendChild(cell);
+        });
+                dataRow.style.cursor = "pointer";
+        dataRow.addEventListener("click", function () {
+            tableBody.querySelectorAll(".summary-selected").forEach(function (selectedRow) {
+                selectedRow.classList.remove("summary-selected");
+            });
+
+            dataRow.classList.add("summary-selected");
+
+            renderSummaryKpiChart(
+                row,
+                turkishNames[row.name] || row.name,
+                unit
+            );
+        });
+        tableBody.appendChild(dataRow);
+    });
+    const targetCountElement = document.getElementById("summaryTargetCount");
+    const actionCountElement = document.getElementById("summaryActionCount");
+
+    if (targetCountElement) {
+        targetCountElement.textContent = String(targetCount);
+    }
+
+    if (actionCountElement) {
+        actionCountElement.textContent = String(actionCount);
+    }
+}let kpiSummaryRows = [];
+
+const summaryReadButton = document.getElementById("summaryReadExcelButton");
+
+if (summaryReadButton) {
+    summaryReadButton.addEventListener("click", async function () {
+        const fileInput = document.getElementById("summaryExcelFile");
+        const status = document.getElementById("summaryExcelStatus");
+        const fileInfo = document.getElementById("summaryExcelInfo");
+        const savedInfo = document.getElementById("summaryExcelSavedInfo");
+        const importPanel = document.getElementById("summaryExcelImportPanel");
+        const toggleButton = document.getElementById("summaryToggleImportButton");
+        const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+        if (!file) {
+            status.textContent = "Lütfen önce Excel dosyasını seçin.";
+            return;
+        }
+
+        summaryReadButton.disabled = true;
+        status.textContent = "Excel okunuyor...";
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const rows = parseKpiSummaryWorkbookData(arrayBuffer);
+
+            if (rows.length === 0) {
+                throw new Error("Excel sayfasında KPI satırı bulunamadı.");
+            }
+
+            const record = await saveKpiSummaryWorkbook(file);
+            kpiSummaryRows = rows;
+
+            const importedDate = new Date(record.importedAt).toLocaleString("tr-TR");
+            const infoText =
+                "Dosya: " + record.name +
+                " | Son aktarım: " + importedDate;
+
+            status.textContent =
+                "Excel kaydedildi ve okundu. " +
+                rows.length +
+                " KPI satırı bulundu. Tablo ve grafiğe aktarma sonraki adımda yapılacak.";
+
+            if (fileInfo) {
+                fileInfo.textContent = infoText;
+            }
+
+            if (savedInfo) {
+                savedInfo.textContent = infoText;
+                savedInfo.style.display = "block";
+            }
+
+            if (importPanel) {
+                importPanel.style.display = "none";
+            }
+
+            if (toggleButton) {
+                toggleButton.style.display = "inline-block";
+            }
+        } catch (error) {
+            status.textContent = "Excel okunamadı: " + error.message;
+        } finally {
+            summaryReadButton.disabled = false;
+        }
+    });
+}
+
+const summaryToggleButton =
+    document.getElementById("summaryToggleImportButton");
+
+if (summaryToggleButton) {
+    summaryToggleButton.addEventListener("click", function () {
+        const importPanel =
+            document.getElementById("summaryExcelImportPanel");
+
+        if (importPanel) {
+            importPanel.style.display =
+                importPanel.style.display === "none" ? "block" : "none";
+        }
+    });
+}
+async function restoreKpiSummaryWorkbook() {
+    const status = document.getElementById("summaryExcelStatus");
+    const fileInfo = document.getElementById("summaryExcelInfo");
+    const savedInfo = document.getElementById("summaryExcelSavedInfo");
+    const importPanel = document.getElementById("summaryExcelImportPanel");
+    const toggleButton = document.getElementById("summaryToggleImportButton");
+
+    try {
+        const record = await loadKpiSummaryWorkbook();
+
+        if (!record || !record.data) {
+            return;
+        }
+
+        kpiSummaryRows = parseKpiSummaryWorkbookData(record.data);
+
+        const importedDate = new Date(record.importedAt).toLocaleString("tr-TR");
+        const infoText =
+            "Dosya: " + record.name +
+            " | Son aktarım: " + importedDate;
+
+        if (status) {
+            status.textContent =
+                "Kayıtlı Excel bulundu. " +
+                kpiSummaryRows.length +
+                " KPI satırı okundu.";
+        }
+
+        if (fileInfo) {
+            fileInfo.textContent = infoText;
+        }
+
+        if (savedInfo) {
+            savedInfo.textContent = infoText;
+            savedInfo.style.display = "block";
+        }
+
+        if (importPanel) {
+            importPanel.style.display = "none";
+        }
+
+        if (toggleButton) {
+            toggleButton.style.display = "inline-block";
+        }
+    } catch (error) {
+        if (status) {
+            status.textContent =
+                "Kayıtlı KPI Özeti Excel’i yüklenemedi: " + error.message;
+        }
+    }
+}
+
+restoreKpiSummaryWorkbook();
 </script>
 
 
