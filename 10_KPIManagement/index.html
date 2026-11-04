@@ -312,20 +312,59 @@ body.kpi-summary-page .summary-actions {
 
 #kpiSummaryView .summary-top {
     display: grid;
-        position: sticky;
+    position: sticky;
     top: 0;
     z-index: 20;
     background: #f4f6f9;
-    grid-template-columns: minmax(220px, 0.65fr) minmax(420px, 2.15fr);
+    grid-template-columns: minmax(420px, 1.6fr) minmax(220px, 1fr);
     gap: 18px;
     margin-bottom: 14px;
 }
-
 #kpiSummaryView .summary-statuses {
     display: grid;
     gap: 12px;
 }
+#kpiSummaryView .summary-table-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
 
+#kpiSummaryView .summary-table-title h2 {
+    margin: 0 0 6px;
+}
+
+#kpiSummaryView .summary-statuses-inline {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    gap: 10px;
+    width: min(100%, 440px);
+}
+
+#kpiSummaryView .summary-statuses-inline .summary-status-card {
+    min-height: 68px;
+    padding: 10px 12px;
+    gap: 8px;
+}
+
+#kpiSummaryView .summary-statuses-inline .summary-status-icon {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    font-size: 22px;
+}
+
+#kpiSummaryView .summary-statuses-inline h2 {
+    margin: 0;
+    font-size: 14px;
+}
+
+#kpiSummaryView .summary-top .summary-chart-card {
+    grid-column: 1;
+    width: 100%;
+    justify-self: stretch;
+}
 #kpiSummaryView .summary-card {
     min-width: 0;
     padding: 20px;
@@ -804,7 +843,39 @@ body.kpi-summary-page .summary-actions {
     <div id="summaryExcelInfo" class="summary-muted" style="margin-top: 6px;"></div>
 </section>
             <div class="summary-top">
-                <section class="summary-statuses" aria-label="KPI durum özeti">
+
+                <section class="summary-card summary-chart-card">
+                    <h2 id="summaryChartTitle">Seçili KPI Performansı</h2>
+<div id="summaryChartDescription" class="summary-muted">
+    Tablodan KPI seçildiğinde grafik burada gösterilecek
+</div>
+<div style="height: 125px; margin-top: 12px;">
+    <canvas id="summaryKpiChart"></canvas>
+</div>
+                    <p class="summary-chart-note">Excel verileri sonraki adımda bağlanacak.</p>
+                </section>
+                <section class="summary-card summary-gauge-card" aria-label="Seçili KPI durum göstergesi">
+    <h2>Seçili KPI Durumu</h2>
+    <div id="summaryGaugeStatus" class="summary-gauge-status">Tablodan KPI seçin</div>
+<div id="summaryGauge" class="summary-gauge">
+    <svg viewBox="0 0 200 120" width="100%" height="170" role="img" aria-label="KPI durum göstergesi">
+        <path d="M 20 100 A 80 80 0 0 1 60 30.7" fill="none" stroke="#d83232" stroke-width="14" stroke-linecap="round"></path>
+        <path d="M 60 30.7 A 80 80 0 0 1 140 30.7" fill="none" stroke="#f0b429" stroke-width="14"></path>
+        <path d="M 140 30.7 A 80 80 0 0 1 180 100" fill="none" stroke="#16803c" stroke-width="14" stroke-linecap="round"></path>
+        <line id="summaryGaugeNeedle" x1="100" y1="100" x2="100" y2="42" stroke="#24344d" stroke-width="5" stroke-linecap="round"></line>
+        <circle cx="100" cy="100" r="7" fill="#24344d"></circle>
+    </svg>
+</div>
+</section>
+            </div>
+
+            <section class="summary-card summary-table-card">
+<div class="summary-table-heading">
+    <div class="summary-table-title">
+        <h2>KPI Performansı</h2>
+        <div class="summary-muted">Pro-Target Project verilerinin özeti</div>
+    </div>
+                <section class="summary-statuses summary-statuses-inline" aria-label="KPI durum özeti">
                     <article class="summary-card summary-status-card">
                         <div class="summary-status-icon good" aria-hidden="true">✓</div>
                         <div>
@@ -821,23 +892,7 @@ body.kpi-summary-page .summary-actions {
                         </div>
                     </article>
                 </section>
-
-                <section class="summary-card summary-chart-card">
-                    <h2 id="summaryChartTitle">Seçili KPI Performansı</h2>
-<div id="summaryChartDescription" class="summary-muted">
-    Tablodan KPI seçildiğinde grafik burada gösterilecek
 </div>
-<div style="height: 125px; margin-top: 12px;">
-    <canvas id="summaryKpiChart"></canvas>
-</div>
-                    <p class="summary-chart-note">Excel verileri sonraki adımda bağlanacak.</p>
-                </section>
-            </div>
-
-            <section class="summary-card summary-table-card">
-                <h2>KPI Performansı</h2>
-                <div class="summary-muted">Pro-Target Project verilerinin özeti</div>
-
                 <div class="summary-table-wrap">
                     <table class="summary-table">
                         <thead>
@@ -2098,7 +2153,35 @@ function parseKpiSummaryWorkbookData(arrayBuffer) {
     return rows;
 }
 let summaryKpiChartInstance = null;
+function updateSummaryGauge(status) {
+    const needle = document.getElementById("summaryGaugeNeedle");
+    const statusLabel = document.getElementById("summaryGaugeStatus");
 
+    if (!needle || !statusLabel) {
+        return;
+    }
+
+    const gaugeStates = {
+        "Aksiyon Gerekli": { angle: -60, color: "#d83232" },
+        "İzle": { angle: 0, color: "#f0b429" },
+        "Hedef İçinde": { angle: 60, color: "#16803c" }
+    };
+
+    const state = gaugeStates[status];
+
+    if (!state) {
+        statusLabel.textContent = "Durum hesaplanamadı";
+        statusLabel.style.color = "#65758b";
+        needle.setAttribute("transform", "rotate(0 100 100)");
+        needle.setAttribute("stroke", "#65758b");
+        return;
+    }
+
+    statusLabel.textContent = status;
+    statusLabel.style.color = state.color;
+    needle.setAttribute("transform", "rotate(" + state.angle + " 100 100)");
+    needle.setAttribute("stroke", state.color);
+}
 function renderSummaryKpiChart(row, label, unit) {
     const canvas = document.getElementById("summaryKpiChart");
     const title = document.getElementById("summaryChartTitle");
@@ -2471,6 +2554,7 @@ function renderKpiSummaryTable(rows) {
                 turkishNames[row.name] || row.name,
                 unit
             );
+            updateSummaryGauge(summaryStatus.status);
         });
         tableBody.appendChild(dataRow);
     });
