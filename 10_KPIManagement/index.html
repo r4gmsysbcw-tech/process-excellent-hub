@@ -285,7 +285,12 @@ body.kpi-summary-page .main > :not(.topbar):not(#kpiSummaryView) {
 body.kpi-summary-page #toggleExcelImportButton {
     display: none !important;
 }
-
+body.kpi-summary-page .summary-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
 #kpiSummaryView .summary-content {
     min-width: 0;
 }
@@ -313,12 +318,12 @@ body.kpi-summary-page #toggleExcelImportButton {
     background: #f4f6f9;
     grid-template-columns: minmax(220px, 0.65fr) minmax(420px, 2.15fr);
     gap: 18px;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
 #kpiSummaryView .summary-statuses {
     display: grid;
-    gap: 16px;
+    gap: 12px;
 }
 
 #kpiSummaryView .summary-card {
@@ -332,7 +337,7 @@ body.kpi-summary-page #toggleExcelImportButton {
 
 #kpiSummaryView .summary-status-card {
     display: flex;
-    min-height: 118px;
+    min-height: 100px;
     align-items: center;
     gap: 16px;
 }
@@ -584,13 +589,20 @@ body.kpi-summary-page #toggleExcelImportButton {
     </a>
 </div>
                 </div>
-                <button class="button" type="button"
-                    onclick="window.print()">Sunum / Yazdır</button>
-                    <button class="button" type="button" id="toggleExcelImportButton">
-    Excel'i Güncelle
-</button>
-            </header>
+<div class="summary-actions">
+    <button class="button" type="button"
+        onclick="window.print()">Sunum / Yazdır</button>
 
+    <button class="button" type="button" id="summaryToggleImportButton"
+        style="display: none;">
+        Excel'i Güncelle
+    </button>
+
+    <button class="button" type="button" id="toggleExcelImportButton">
+        Excel'i Güncelle
+    </button>
+</div>
+</header>
             <section class="filters">
 
 <div class="filter main-kpi-filter">
@@ -763,18 +775,6 @@ body.kpi-summary-page #toggleExcelImportButton {
 </section>
 <section id="kpiSummaryView" style="display: none;">
     <div class="summary-content">
-                    <header class="summary-header">
-                <h1>KPI Özeti</h1>
-                <p>Pro-Target Project • YTD performans özeti</p>
-                <button
-    id="summaryToggleImportButton"
-    type="button"
-    style="display: none; margin-top: 12px; padding: 8px 12px; border: 0; border-radius: 6px; color: #fff; background: #244d76; cursor: pointer;"
->
-    Excel'i Güncelle
-</button>
-            </header>
-            <div id="summaryExcelSavedInfo" class="summary-muted" style="display: none; margin-bottom: 14px;"></div>
 <section id="summaryExcelImportPanel" class="summary-card" style="margin-bottom: 18px;">
     <h2>Excel KPI verisini yükle</h2>
     <p class="summary-muted">
@@ -827,7 +827,7 @@ body.kpi-summary-page #toggleExcelImportButton {
 <div id="summaryChartDescription" class="summary-muted">
     Tablodan KPI seçildiğinde grafik burada gösterilecek
 </div>
-<div style="height: 150px; margin-top: 18px;">
+<div style="height: 125px; margin-top: 12px;">
     <canvas id="summaryKpiChart"></canvas>
 </div>
                     <p class="summary-chart-note">Excel verileri sonraki adımda bağlanacak.</p>
@@ -912,7 +912,7 @@ body.kpi-summary-page #toggleExcelImportButton {
                     </table>
                 </div>
             </section>
-
+<div id="summaryExcelSavedInfo" class="summary-muted" style="display: none; margin-bottom: 14px;"></div>
     </div>
 </section>
         </main>
