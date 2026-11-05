@@ -2210,6 +2210,22 @@ function renderSummaryKpiChart(row, label, unit) {
     const yAxisMax = highestChartValue > 0
         ? highestChartValue * 1.15
         : 1;
+        const summaryYAxisRanges = {
+    "Clinker Production DF1": { min: 200000, max: 850000 },
+    "Clinker Production DF2": { min: 200000, max: 1100000 },
+    "Cement Production": { min: 300000, max: 2200000 },
+    "Grinding Energy": { min: 20, max: 50 },
+    "Overall Clinker usage": { min: 50, max: 95 },
+    "DF1 Performance factor": { min: 20, max: 100 },
+    "DF2 Performance factor": { min: 20, max: 100 },
+    "DF1 Reliability factor": { min: 20, max: 100 },
+    "DF2 Reliability factor": { min: 20, max: 100 },
+    "DF1 Heat Consumption SHC": { min: 500, max: 900 },
+    "DF2 Heat Consumption SHC": { min: 500, max: 900 },
+    "Heat Consumption Total Kiln": { min: 500, max: 900 }
+};
+
+const summaryYAxisRange = summaryYAxisRanges[row.name] || null;
     if (title) {
         title.textContent = label + " – KPI Performansı";
     }
@@ -2243,11 +2259,17 @@ function renderSummaryKpiChart(row, label, unit) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+    padding: {
+        top: 18
+    }
+},
             plugins: {
                 legend: {
                     display: false
                 },
                 datalabels: {
+                clip: false,
                     display: function (context) {
                         return context.dataset.data[context.dataIndex] !== null;
                     },
@@ -2262,8 +2284,9 @@ function renderSummaryKpiChart(row, label, unit) {
             },
             scales: {
                 y: {
-                    beginAtZero: true,
-                    max: yAxisMax,
+                    beginAtZero: !summaryYAxisRange,
+min: summaryYAxisRange ? summaryYAxisRange.min : undefined,
+max: summaryYAxisRange ? summaryYAxisRange.max : yAxisMax,
                     ticks: {
                         callback: function (value) {
                             return Number(value).toLocaleString("tr-TR") + suffix;
