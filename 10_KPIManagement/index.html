@@ -273,6 +273,38 @@ body.main-kpi-page .chart-panel:not(.main-kpi-chart-panel) {
 body.main-kpi-page #kiln {
     display: none !important;
 }
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-charts {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-main,
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly {
+    min-width: 0;
+}
+
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly h3 {
+    margin: 0;
+    color: #142338;
+    font-size: 16px;
+}
+
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > div {
+    height: 224px !important;
+    margin-top: 8px !important;
+}
+
+@media (max-width: 850px) {
+    body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-charts {
+        grid-template-columns: 1fr;
+    }
+
+    body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > div {
+        height: 208px !important;
+    }
+}
 /* KPI Özeti için ayrılmış görünüm */
 #kpiSummaryView {
     width: 100%;
@@ -807,10 +839,17 @@ body.kpi-summary-page .summary-actions {
         <span id="kilnChartDescription">DF1 ve DF2 aylık özgül elektrik tüketimi (kWh/ton)</span>
     </div>
 
-    <div style="height: 360px; margin-top: 20px;">
-        <canvas id="kilnEnergyChart"></canvas>
+    <div class="overview-charts">
+        <div class="overview-chart-main" style="height: 324px; margin-top: 20px;">
+            <canvas id="kilnEnergyChart"></canvas>
+        </div>
+        <div class="overview-chart-yearly">
+            <h3>Yıllar Bazında Değişim</h3>
+            <div style="height: 324px; margin-top: 20px;">
+                <canvas id="kilnAnnualChart"></canvas>
+            </div>
+        </div>
     </div>
-
     <div id="kilnChartStatus" class="muted" style="margin-top: 12px;">
         Grafik için Excel verileri hazırlanıyor.
     </div>
@@ -1832,7 +1871,112 @@ max: selectedEquipment === "TOTAL_CEMENT" ? 140 :
     kilnChartStatus.textContent =
         "Grafik kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edin.";
 }
+const annualCanvas = document.getElementById("kilnAnnualChart");
 
+if (annualCanvas && typeof Chart !== "undefined" && dataRow !== null) {
+    const annualYears = ["2023", "2024", "2025", "2026"];
+
+    const annualValues = annualYears.map(function (year) {
+        let annualSheetName;
+        let ytdColumn;
+
+        if (selectedEquipment === "TOTAL_CEMENT") {
+            annualSheetName = "TOD_KPI_" + year;
+            ytdColumn = 60;
+        } else if (selectedEquipment.startsWith("CM")) {
+            annualSheetName = "Grinding " + year;
+            ytdColumn = 6 + (Number(year) - 2023);
+        } else {
+            annualSheetName = "Kiln SEC " + year.slice(-2);
+            ytdColumn = 5 + (Number(year) - 2023);
+        }
+
+        const annualSheet = workbook.Sheets[annualSheetName];
+
+        if (!annualSheet) {
+            return null;
+        }
+
+        const cellAddress = XLSX.utils.encode_cell({
+            r: dataRow - 1,
+            c: ytdColumn - 1
+        });
+        const cell = annualSheet[cellAddress];
+
+        if (!cell || cell.v === undefined || cell.v === null || cell.v === "") {
+            return null;
+        }
+
+        let value = cell.v;
+
+        if (typeof value === "string") {
+            value = value.trim();
+
+            if (value.includes(",")) {
+                value = value.replace(/\./g, "").replace(",", ".");
+            }
+
+            value = Number(value);
+        }
+
+        return Number.isFinite(value) ? value : null;
+    });
+
+    if (window.kilnAnnualChartInstance) {
+        window.kilnAnnualChartInstance.destroy();
+    }
+
+    window.kilnAnnualChartInstance = new Chart(annualCanvas, {
+        type: "bar",
+        data: {
+            labels: annualYears.map(function (year) {
+                return year + " YTD";
+            }),
+            datasets: [{
+                label: equipmentLabel,
+                data: annualValues,
+                backgroundColor: ["#9bb6d2", "#7798bc", "#4b7fb9", "#f59e0b"],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                datalabels: {
+                    anchor: "end",
+                    align: "top",
+                    formatter: function (value) {
+                        return value === null
+                            ? ""
+                            : value.toLocaleString("tr-TR", {
+                                maximumFractionDigits: 2
+                            });
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Yıl"
+                    }
+                },
+y: {
+    min: 15,
+    max: selectedEquipment === "TOTAL_CEMENT" ? 140 :
+         selectedEquipment === "TOTAL_RAW" ? 30 :
+         selectedEquipment === "TOTAL_COAL" ? 65 :
+         selectedEquipment.startsWith("FD") ? 30 :
+         selectedEquipment.startsWith("KD") ? 65 : 50
+}            }
+        },
+        plugins: [ChartDataLabels]
+    });
+}
         const table = document.createElement("table");
         table.style.cssText =
             "border-collapse:collapse;width:100%;font-size:12px;";
