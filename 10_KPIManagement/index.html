@@ -284,8 +284,15 @@ body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-main,
 body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly {
     min-width: 0;
 }
-
-body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly h3 {
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-main,
+body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly {
+  box-sizing: border-box;
+  padding: 20px;
+  background: #fffaf3;
+  border: 1px solid #e4d8c8;
+  border-radius: 24px;
+  box-shadow: 0 12px 28px rgba(55, 45, 30, 0.16);
+}body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly h3 {
     margin: 0;
     color: #142338;
     font-size: 16px;
@@ -552,6 +559,89 @@ body.kpi-summary-page .summary-actions {
         grid-template-columns: 1fr;
     }
 }
+/* Yalnızca Genel Bakış için yeni renk paleti */
+body.overview-theme {
+    background: radial-gradient(
+        ellipse at top right,
+        #f5ddc7 0%,
+        #f7f1e5 48%,
+        #f1efdf 100%
+    );
+    color: #1c382d;
+}
+
+body.overview-theme .sidebar {
+    background: #172638;
+}
+
+body.overview-theme .menu-item.active,
+body.overview-theme .menu-item:hover {
+    background: #30465f;
+    color: #ffffff;
+}
+body.overview-theme #overview .metric-value {
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+body.overview-theme #overview .metric-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.overview-theme #overview .metric-heading-row .metric-title {
+    margin-bottom: 0;
+}
+
+body.overview-theme #overview .metric-trend-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #d0e4ce;
+    color: #1c382d;
+}
+
+body.overview-theme #overview .metric-trend-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+body.overview-theme #overview .metric-budget-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #eadfce;
+    color: #1c382d;
+}
+
+body.overview-theme #overview .metric-budget-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+/* Genel Bakış kart yüzeyleri */
+body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) .filters,
+body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #overview .metric,
+body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
+    background: rgba(255, 249, 240, 0.92);
+    border-color: rgba(88, 104, 83, 0.16);
+    box-shadow: 0 12px 28px rgba(45, 54, 40, 0.08);
+}
     </style>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -559,7 +649,7 @@ body.kpi-summary-page .summary-actions {
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 
-<body>
+<body class="overview-theme">
     <div class="app">
 
         <aside class="sidebar">
@@ -750,13 +840,32 @@ body.kpi-summary-page .summary-actions {
 
             <section class="overview" id="overview">
                         <div class="metric">
-            <div class="metric-title">YTD Gerçekleşme</div>
-            <div class="metric-value" id="ytdActual">—</div>
+            <div class="metric-heading-row">
+    <div class="metric-title">YTD Gerçekleşme</div>
+    <span class="metric-trend-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 7l6 6 4-4 6 6"></path>
+            <path d="M15 15h5v-5"></path>
+        </svg>
+    </span>
+</div>
+<div class="metric-value" id="ytdActual">—</div>
             <div class="muted">kWh/ton</div>
         </div>
 
         <div class="metric">
-            <div class="metric-title">YTD Bütçe</div>
+            <div class="metric-heading-row">
+    <div class="metric-title">YTD Bütçe</div>
+    <span class="metric-budget-icon" aria-hidden="true">
+<svg viewBox="0 0 24 24">
+    <circle cx="10" cy="14" r="8"></circle>
+    <circle cx="10" cy="14" r="5"></circle>
+    <circle cx="10" cy="14" r="2"></circle>
+    <path d="M21 3l-9.6 9.6"></path>
+    <path d="M16 3h5v5"></path>
+</svg>
+    </span>
+</div>
             <div class="metric-value" id="ytdBudget">—</div>
             <div class="muted">kWh/ton</div>
         </div>
@@ -769,6 +878,7 @@ body.kpi-summary-page .summary-actions {
   <div id="kpiGauge" style="width:100px; height:60px; flex-shrink:0;"></div>
 </div>
 <div class="muted">%</div>
+<div id="kpiScoreExplanation" class="muted"></div>
         </div>
             </section>
             <section class="overview" id="mainKpiOverview" style="display: none;">
@@ -1634,7 +1744,7 @@ let lastMonthColumn;
         const actualElement = document.getElementById("ytdActual");
         const budgetElement = document.getElementById("ytdBudget");
         const scoreElement = document.getElementById("kpiScore");
-
+const scoreExplanationElement = document.getElementById("kpiScoreExplanation");
         if (actualElement) {
             actualElement.textContent =
                 ytdActual === null ? "Veri yok" :
@@ -1654,7 +1764,16 @@ let lastMonthColumn;
         if (scoreElement) {
             if (ytdActual !== null && ytdBudget !== null && ytdActual !== 0) {
                 const score = (ytdBudget - ytdActual) / ytdActual * 100;
+if (scoreExplanationElement) {
+    const direction =
+        score > 0 ? "altında" :
+        score < 0 ? "üzerinde" : "hedefinde";
 
+    scoreExplanationElement.textContent =
+        `Bütçenin %${Math.abs(score).toLocaleString("tr-TR", {
+            maximumFractionDigits: 2
+        })} ${direction}.`;
+}
 const gauge = document.getElementById("kpiGauge");
 if (gauge) {
   const value = Math.max(-15, Math.min(10, score));
@@ -1692,6 +1811,9 @@ if (gauge) {
                     score < 0 ? "#eab308" : "";
             } else {
                 scoreElement.textContent = "Veri yok";
+                if (scoreExplanationElement) {
+    scoreExplanationElement.textContent = "";
+}
                 scoreElement.style.color = "";
             }
         }
@@ -1788,19 +1910,23 @@ datasets: (() => {
   const group = combinedGroups[selectedEquipment];
 
   if (!group) {
-    return [{
+    const barDataset = {
       label: equipmentLabel + " (kWh/ton)",
       data: monthlyData,
-      backgroundColor: monthlyData.map((value, index) => {
-        if (value === null || index === 0 || monthlyData[index - 1] === null) {
-          return "#f59e0b";
+      backgroundColor: monthlyData.map((actual, index) => {
+        if (actual === null || actual === undefined) {
+          return "#9bb6d2";
         }
-        return value < monthlyData[index - 1] ? "#16a34a" : "#f59e0b";
-      })
-    }];
-  }
 
-  return group.map(item => ({
+        const previous = index > 0 ? monthlyData[index - 1] : null;
+        return previous !== null && previous !== undefined && actual < previous
+          ? "#83bd91"
+          : "#df6b45";
+      })
+    };
+
+    return [barDataset];  }
+    return group.map(item => ({
     label: item.label + " (kWh/ton)",
     data: Array.from({ length: 12 }, (_, index) =>
       getKilnMonthlyValue(item.row, firstMonthColumn + index)
@@ -1942,13 +2068,14 @@ if (annualCanvas && typeof Chart !== "undefined" && dataRow !== null) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            indexAxis: "y",
             plugins: {
                 legend: {
                     display: false
                 },
                 datalabels: {
                     anchor: "end",
-                    align: "top",
+                    align: "right",
                     formatter: function (value) {
                         return value === null
                             ? ""
@@ -1958,22 +2085,22 @@ if (annualCanvas && typeof Chart !== "undefined" && dataRow !== null) {
                     }
                 }
             },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: "Yıl"
-                    }
-                },
-y: {
-    min: 15,
-    max: selectedEquipment === "TOTAL_CEMENT" ? 140 :
-         selectedEquipment === "TOTAL_RAW" ? 30 :
-         selectedEquipment === "TOTAL_COAL" ? 65 :
-         selectedEquipment.startsWith("FD") ? 30 :
-         selectedEquipment.startsWith("KD") ? 65 : 50
-}            }
-        },
+scales: {
+    x: {
+        min: 15,
+        max: selectedEquipment === "TOTAL_CEMENT" ? 140 :
+             selectedEquipment === "TOTAL_RAW" ? 30 :
+             selectedEquipment === "TOTAL_COAL" ? 65 :
+             selectedEquipment.startsWith("FD") ? 30 :
+             selectedEquipment.startsWith("KD") ? 65 : 50
+    },
+    y: {
+        title: {
+            display: true,
+            text: "Yıl"
+        }
+    }
+}        },
         plugins: [ChartDataLabels]
     });
 }
@@ -2105,7 +2232,7 @@ document.querySelectorAll(".sidebar .menu-item").forEach(function (link) {
     const target = link.getAttribute("href");
 document.body.classList.toggle("main-kpi-page", target === "#mainKpiOverview");
 document.body.classList.toggle("kpi-summary-page", target === "#kpiSummaryView");
-
+document.body.classList.toggle("overview-theme", target === "#overview");
 const summaryView = document.getElementById("kpiSummaryView");
 if (summaryView) {
     summaryView.style.display =
