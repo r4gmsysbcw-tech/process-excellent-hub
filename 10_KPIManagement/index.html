@@ -909,10 +909,17 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
     <div class="muted" id="mainKpiChartDescription">
         Seçilen KPI parametresinin aylık gerçekleşmeleri
     </div>
-    <div style="height: 360px; margin-top: 20px;">
+<div style="display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 16px; margin-top: 20px; align-items: stretch;">
+    <div style="height: 360px; min-width: 0;">
         <canvas id="mainKpiChart"></canvas>
     </div>
-</section>
+    <div style="height: 360px; min-width: 0; padding: 16px; box-sizing: border-box; background: #fffaf3; border: 1px solid #eadfce; border-radius: 20px;">
+        <h3 style="margin: 0 0 12px; font-size: 16px;">Yıllar Bazında Değişim</h3>
+        <div style="height: 300px;">
+            <canvas id="mainKpiAnnualChart"></canvas>
+        </div>
+    </div>
+</div></section>
 <section class="panel" id="excel-import" style="display: none; margin-bottom: 22px; min-height: auto;">
     <h2>Excel KPI Verisi Aktarımı</h2>
     <p class="muted">
@@ -1556,6 +1563,75 @@ kiln2MTBS: { min: 0 },
         },
         plugins: [ChartDataLabels]
     });
+    const annualCanvas = document.getElementById("mainKpiAnnualChart");
+const annualYears = ["2023", "2024", "2025", "2026"];
+const annualRow = mainKpiRows[parameterKey];
+
+if (annualCanvas && annualRow) {
+  if (window.mainKpiAnnualChartInstance) {
+    window.mainKpiAnnualChartInstance.destroy();
+  }
+
+  const annualValues = annualYears.map(function (year) {
+    const annualSheet = workbook.Sheets["TOD_KPI_" + year];
+    const cell = annualSheet && annualSheet["BH" + annualRow];
+
+    if (!cell || cell.v === null || cell.v === undefined || cell.v === "") {
+      return null;
+    }
+
+    let value = cell.v;
+    if (typeof value === "string" && value.includes(",")) {
+      value = value.trim().replace(/\./g, "").replace(",", ".");
+    }
+
+    value = Number(value);
+    if (percentParameters.includes(parameterKey)) {
+  value *= 100;
+}
+    return Number.isFinite(value) ? value : null;
+  });
+
+  const annualRange = mainKpiYAxisRanges[parameterKey] || {};
+
+  window.mainKpiAnnualChartInstance = new Chart(annualCanvas, {
+    type: "bar",
+    data: {
+      labels: annualYears.map(function (year) {
+        return year + " YTD";
+      }),
+      datasets: [{
+        label: parameterLabel,
+        data: annualValues,
+        backgroundColor: ["#9bb6d2", "#7798bc", "#4b7fb9", "#f59e0b"],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          anchor: "end",
+          align: "right",
+          formatter: function (value) {
+            return value === null
+              ? ""
+              : value.toLocaleString("tr-TR", { maximumFractionDigits: 2 });
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: annualRange.min,
+          max: annualRange.max
+        }
+      }
+    }
+  });
+}
 }
 window.renderMainKpiChart = renderMainKpiChart;
 renderMainKpiChart();
