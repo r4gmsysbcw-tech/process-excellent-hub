@@ -1465,7 +1465,10 @@ function renderMainKpiChart() {
     const monthlyValues = data.monthly.map(value =>
         value === null ? null : (isPercent ? value * 100 : value)
     );
-
+const budgetReference =
+    data.budget === null
+        ? null
+        : (isPercent ? data.budget * 100 : data.budget);
 const higherIsBetterParameters = [
     "kiln1Reliability",
     "kiln2Reliability",
@@ -1517,14 +1520,31 @@ kiln2MTBS: { min: 0 },
         type: "bar",
         data: {
             labels: kilnMonths,
-            datasets: [{
-                label: parameterLabel + (isPercent ? " (%)" : ""),
-                data: monthlyValues,
-                backgroundColor: barColors,
-                borderColor: barColors,
-                borderWidth: 1
-            }]
-        },
+datasets: [
+    {
+        type: "bar",
+        label: parameterLabel + (isPercent ? " (%)" : ""),
+        data: monthlyValues,
+        backgroundColor: barColors,
+        borderColor: barColors,
+        borderWidth: 1
+    },
+    ...(budgetReference === null ? [] : [{
+        type: "line",
+        label: "Bütçe Hedefi",
+        data: Array(12).fill(budgetReference),
+        borderColor: "#2563eb",
+        borderWidth: 2,
+        borderDash: [8, 5],
+        pointRadius: 0,
+        pointHoverRadius: 0,
+        fill: false,
+        tension: 0,
+        datalabels: {
+            display: false
+        }
+    }])
+]        },
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -1946,6 +1966,10 @@ if (descriptionElement) {
     descriptionElement.textContent =
         equipmentLabel + " aylık özgül elektrik tüketimi (kWh/ton)";
 }
+const overviewBudgetReference =
+    ytdBudget !== null && Number.isFinite(ytdBudget)
+        ? ytdBudget
+        : null;
 const kilnCanvas = document.getElementById("kilnEnergyChart");
 
 if (kilnCanvas && typeof Chart !== "undefined") {
@@ -1983,7 +2007,16 @@ datasets: (() => {
   };
 
   const group = combinedGroups[selectedEquipment];
-
+const budgetText = document.getElementById("ytdBudget")?.textContent ?? "";
+const parsedBudget = Number(
+  budgetText.trim().replace(/\s/g, "").replace(/\./g, "").replace(",", ".")
+);
+const overviewBudgetReference =
+  budgetText.trim() !== "" &&
+  budgetText.trim() !== "--" &&
+  Number.isFinite(parsedBudget)
+    ? parsedBudget
+    : null;
   if (!group) {
     const barDataset = {
       label: equipmentLabel + " (kWh/ton)",
@@ -2000,7 +2033,24 @@ datasets: (() => {
       })
     };
 
-    return [barDataset];  }
+    return [
+  barDataset,
+  ...(Number.isFinite(overviewBudgetReference) ? [{
+    type: "line",
+    label: "Bütçe Hedefi",
+    data: Array(12).fill(overviewBudgetReference),
+    borderColor: "#2563eb",
+    borderWidth: 2,
+    borderDash: [8, 5],
+    pointRadius: 0,
+    pointHoverRadius: 0,
+    fill: false,
+    tension: 0,
+    datalabels: {
+      display: false
+    }
+  }] : [])
+];  }
     return group.map(item => ({
     label: item.label + " (kWh/ton)",
     data: Array.from({ length: 12 }, (_, index) =>
