@@ -1004,11 +1004,26 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
 
                 <section class="summary-card summary-chart-card">
                     <h2 id="summaryChartTitle">Seçili KPI Performansı</h2>
-<div id="summaryChartDescription" class="summary-muted">
+<div id="summaryChartDescription" class="summary-muted" style="position: relative; top: -10px;">
     Tablodan KPI seçildiğinde grafik burada gösterilecek
 </div>
-<div style="height: 125px; margin-top: 12px;">
-    <canvas id="summaryKpiChart"></canvas>
+<div style="display: grid; grid-template-columns: 30% 70%; align-items: start; height: 125px; margin-top: 0;">
+    <div style="min-width: 0;">
+        <div style="font-size: 18px; color: #65758b; margin-bottom: 6px;">2026 YTD gerçekleşen</div>
+        <div style="font-size: 30px; font-weight: 700; color: #142338; line-height: 1.1;">
+            <span id="summaryYtdValue">—</span>
+            <span id="summaryYtdUnit" style="font-size: 16px; font-weight: 400;"></span>
+        </div>
+        <div style="margin-top: 8px; font-size: 15px; color: #142338;">
+    <span id="summaryBudgetDeviation">—</span> bütçe sapması
+    </div>
+    <div style="margin-top: 8px; font-size: 15px; color: #142338;">
+    <span id="summaryYearChange">—</span> geçen yıla göre
+</div>
+</div>
+    <div style="min-width: 0; height: 125px; margin-top: 12px;">
+        <canvas id="summaryKpiChart"></canvas>
+    </div>
 </div>
                     <p class="summary-chart-note">Excel verileri sonraki adımda bağlanacak.</p>
                 </section>
@@ -2581,7 +2596,7 @@ function updateSummaryGauge(status) {
     needle.setAttribute("transform", "rotate(" + state.angle + " 100 100)");
     needle.setAttribute("stroke", state.color);
 }
-function renderSummaryKpiChart(row, label, unit) {
+function renderSummaryKpiChart(row, label, unit, kpiDirection, displayedDeviation, budgetStatus) {
     const canvas = document.getElementById("summaryKpiChart");
     const title = document.getElementById("summaryChartTitle");
     const description = document.getElementById("summaryChartDescription");
@@ -2600,6 +2615,104 @@ function renderSummaryKpiChart(row, label, unit) {
         const number = Number(value);
         return Number.isFinite(number) ? number * multiplier : null;
     });
+    const ytdValueElement = document.getElementById("summaryYtdValue");
+const ytdUnitElement = document.getElementById("summaryYtdUnit");
+const selectedYtdValue = chartValues[0];
+
+if (ytdValueElement) {
+    ytdValueElement.textContent = selectedYtdValue === null
+        ? "—"
+        : selectedYtdValue.toLocaleString("tr-TR", {
+            maximumFractionDigits: 2
+        });
+}
+
+if (ytdUnitElement) {
+    ytdUnitElement.textContent = selectedYtdValue === null || !unit
+        ? ""
+        : " " + unit;
+}
+const deviationElement = document.getElementById("summaryBudgetDeviation");
+const deviationBadge = deviationElement && deviationElement.parentElement;
+
+if (deviationBadge) {
+    deviationBadge.style.display = "inline-block";
+    deviationBadge.style.padding = "8px 12px";
+    deviationBadge.style.borderRadius = "999px";
+
+    const statusColors = {
+        "Hedef İçinde": { text: "#166534", fill: "#dcfce7" },
+        "İzle": { text: "#92400e", fill: "#fef3c7" },
+        "Aksiyon Gerekli": { text: "#b91c1c", fill: "#fee2e2" }
+    };
+
+    const colors = statusColors[budgetStatus];
+
+    deviationBadge.style.color = colors ? colors.text : "#142338";
+    deviationBadge.style.backgroundColor = colors ? colors.fill : "transparent";
+}
+const deviationNumber = Number(displayedDeviation);
+const deviationMissing =
+    row.deviation === null ||
+    row.deviation === undefined ||
+    row.deviation === "";
+
+if (deviationElement) {
+    deviationElement.textContent =
+        deviationMissing || !Number.isFinite(deviationNumber)
+            ? "—"
+            : (deviationNumber * 100).toLocaleString("tr-TR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + "%";
+}
+const yearChangeElement = document.getElementById("summaryYearChange");
+const ytdForComparison = chartValues[0];
+const lastYearForComparison = chartValues[2];
+
+if (yearChangeElement) {
+    yearChangeElement.style.color = "#142338";
+    const yearChangeBadge = yearChangeElement.parentElement;
+yearChangeBadge.style.display = "inline-block";
+yearChangeBadge.style.padding = "8px 12px";
+yearChangeBadge.style.borderRadius = "999px";
+yearChangeBadge.style.backgroundColor = "transparent";
+yearChangeBadge.style.color = "#142338";
+    if (
+        ytdForComparison === null ||
+        lastYearForComparison === null ||
+        ytdForComparison === 0
+    ) {
+        yearChangeElement.textContent = "—";
+    } else {
+        const yearChange =
+            ((ytdForComparison - lastYearForComparison) / ytdForComparison) * 100;
+            const favorableYearChange =
+    kpiDirection === "higher"
+        ? yearChange >= 0
+        : kpiDirection === "lower"
+            ? yearChange < 0
+            : null;
+
+if (favorableYearChange !== null) {
+    const scoreColor = favorableYearChange ? "#16803c" : "#b91c1c";
+
+    yearChangeElement.style.color = scoreColor;
+    yearChangeBadge.style.color = scoreColor;
+    yearChangeBadge.style.backgroundColor = favorableYearChange
+        ? "#dcfce7"
+        : "#fee2e2";
+}        const sign = yearChange > 0 ? "+" : yearChange < 0 ? "−" : "";
+
+        yearChangeElement.textContent =
+            sign +
+            Math.abs(yearChange).toLocaleString("tr-TR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) +
+            "%";
+    }
+}
     const validChartValues = chartValues.filter(function (value) {
         return value !== null;
     });
@@ -2832,7 +2945,11 @@ function renderKpiSummaryTable(rows) {
             "DF2 Heat Consumption SHC",
             "Heat Consumption Total Kiln"
         ];
-
+const kpiDirection = higherIsBetter.includes(row.name)
+    ? "higher"
+    : lowerIsBetter.includes(row.name)
+        ? "lower"
+        : null;
         const ytd = row.ytd === null || row.ytd === undefined || row.ytd === ""
             ? NaN
             : Number(row.ytd);
@@ -2841,7 +2958,11 @@ function renderKpiSummaryTable(rows) {
             : Number(row.budget);
 
         if (!Number.isFinite(ytd) || !Number.isFinite(budget) || budget === 0) {
-            return { status: "—", explanation: "Bütçe veya gerçekleşen veri olmadığı için durum hesaplanamadı." };
+            return {
+    status: "—",
+    explanation: "Bütçe veya gerçekleşen veri olmadığı için durum hesaplanamadı.",
+    direction: kpiDirection
+};
         }
         const actualVsBudget = ((ytd - budget) / Math.abs(budget)) * 100;
         let favorableDeviation;
@@ -2851,7 +2972,11 @@ function renderKpiSummaryTable(rows) {
         } else if (lowerIsBetter.includes(row.name)) {
             favorableDeviation = -actualVsBudget;
         } else {
-            return { status: "—", explanation: "Bu KPI için durum kuralı tanımlı değil." };
+            return {
+    status: "—",
+    explanation: "Bu KPI için durum kuralı tanımlı değil.",
+    direction: kpiDirection
+};
         }
 
         let status;
@@ -2873,6 +2998,7 @@ function renderKpiSummaryTable(rows) {
 
         return {
             status: status,
+            direction: kpiDirection,
             explanation: `${comparison}; ${status.toLocaleLowerCase("tr-TR")}.`
         };
     }
@@ -2925,6 +3051,17 @@ function renderKpiSummaryTable(rows) {
         const dataRow = document.createElement("tr");
 
         const summaryStatus = getSummaryStatus(row);
+        const invertDeviationSign =
+    unit === "kWh/t klinker" || unit === "kWh/t çimento";
+
+const displayedDeviation =
+    row.deviation === null ||
+    row.deviation === undefined ||
+    row.deviation === ""
+        ? row.deviation
+        : invertDeviationSign
+            ? -Number(row.deviation)
+            : row.deviation;
         if (summaryStatus.status === "Hedef İçinde") {
             targetCount++;
         } else if (summaryStatus.status === "Aksiyon Gerekli") {
@@ -2936,7 +3073,7 @@ function renderKpiSummaryTable(rows) {
             formatNumber(row.ytd, isPercent),
             formatNumber(row.budget, isPercent),
             formatNumber(row.lastYear, isPercent),
-            formatNumber(row.deviation, true),
+            formatNumber(displayedDeviation, true),
             summaryStatus.status,
             summaryStatus.explanation
         ];
@@ -2974,7 +3111,10 @@ function renderKpiSummaryTable(rows) {
             renderSummaryKpiChart(
                 row,
                 turkishNames[row.name] || row.name,
-                unit
+                unit,
+summaryStatus.direction,
+displayedDeviation,
+summaryStatus.status
             );
             updateSummaryGauge(summaryStatus.status);
         });
