@@ -1007,9 +1007,9 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
 <div id="summaryChartDescription" class="summary-muted" style="position: relative; top: -10px;">
     Tablodan KPI seçildiğinde grafik burada gösterilecek
 </div>
-<div style="display: grid; grid-template-columns: 30% 70%; align-items: start; height: 125px; margin-top: 0;">
+<div style="display: grid; grid-template-columns: 40% 60%; align-items: start; height: 125px; margin-top: 0;">
     <div style="min-width: 0;">
-        <div style="font-size: 18px; color: #65758b; margin-bottom: 6px;">2026 YTD gerçekleşen</div>
+        <div style="font-size: 18px; color: #65758b; margin-bottom: 24px;">2026 YTD gerçekleşen</div>
         <div style="font-size: 30px; font-weight: 700; color: #142338; line-height: 1.1;">
             <span id="summaryYtdValue">—</span>
             <span id="summaryYtdUnit" style="font-size: 16px; font-weight: 400;"></span>
@@ -1021,7 +1021,7 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
     <span id="summaryYearChange">—</span> geçen yıla göre
 </div>
 </div>
-    <div style="min-width: 0; height: 125px; margin-top: 12px;">
+    <div style="min-width: 0; height: 150px; margin-top: 0; border: 1px solid #dce4ee; border-radius: 14px; box-sizing: border-box;">
         <canvas id="summaryKpiChart"></canvas>
     </div>
 </div>
@@ -2623,7 +2623,7 @@ if (ytdValueElement) {
     ytdValueElement.textContent = selectedYtdValue === null
         ? "—"
         : selectedYtdValue.toLocaleString("tr-TR", {
-            maximumFractionDigits: 2
+            maximumFractionDigits: row.name === "Cement Production" ? 0 : 2
         });
 }
 
@@ -2798,7 +2798,7 @@ const summaryYAxisRange = summaryYAxisRanges[row.name] || null;
                 y: {
                     beginAtZero: !summaryYAxisRange,
 min: summaryYAxisRange ? summaryYAxisRange.min : undefined,
-max: summaryYAxisRange ? summaryYAxisRange.max : yAxisMax,
+max: summaryYAxisRange ? Math.max(summaryYAxisRange.max, yAxisMax) : yAxisMax,
                     ticks: {
                         callback: function (value) {
                             return Number(value).toLocaleString("tr-TR") + suffix;
@@ -2933,7 +2933,12 @@ function renderKpiSummaryTable(rows) {
             "Kiln 1 Throughput",
             "Kiln 2 Throughput",
             "MTBS K1",
-            "MTBS K2"
+            "MTBS K2",
+            "CM1 Reliability",
+"CM2 Reliability",
+"CM3 Reliability",
+"CM4 Reliability",
+"CM5 Reliability",
         ];
 
         const lowerIsBetter = [
@@ -3120,6 +3125,10 @@ summaryStatus.status
         });
         tableBody.appendChild(dataRow);
     });
+    const firstKpiRow = tableBody.querySelector("tr:not(.summary-group)");
+if (firstKpiRow) {
+    firstKpiRow.click();
+}
     const targetCountElement = document.getElementById("summaryTargetCount");
     const actionCountElement = document.getElementById("summaryActionCount");
 
