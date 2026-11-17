@@ -3013,13 +3013,28 @@ const kpiDirection = higherIsBetter.includes(row.name)
             status = "Aksiyon Gerekli";
         }
 
-        const difference = Math.abs(actualVsBudget);
-        const comparison = actualVsBudget > 0
-            ? `Bütçenin %${difference.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} üzerinde`
-            : actualVsBudget < 0
-                ? `Bütçenin %${difference.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} altında`
-                : "Bütçeyle aynı seviyede";
+const sourceDeviation = Number(row.deviation);
+const deviationForText =
+    row.deviation === null ||
+    row.deviation === undefined ||
+    row.deviation === "" ||
+    !Number.isFinite(sourceDeviation)
+        ? actualVsBudget
+        : sourceDeviation * 100;
 
+const unitForText = getUnit(row);
+const displayedDeviationForText =
+    unitForText === "kWh/t klinker" ||
+    unitForText === "kWh/t çimento"
+        ? -deviationForText
+        : deviationForText;
+
+const difference = Math.abs(displayedDeviationForText);
+const comparison = actualVsBudget > 0
+    ? `Bütçenin %${difference.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} üzerinde`
+    : actualVsBudget < 0
+        ? `Bütçenin %${difference.toLocaleString("tr-TR", { maximumFractionDigits: 2 })} altında`
+        : "Bütçeyle aynı seviyede";
         return {
             status: status,
             direction: kpiDirection,
