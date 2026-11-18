@@ -2343,6 +2343,13 @@ const overviewBudgetReference =
                     position: "top"
                 },
                 datalabels: {
+rotation:
+    selectedEquipment === "TOTAL_COAL" ||
+    selectedEquipment === "TOTAL_KILN" ||
+    selectedEquipment === "TOTAL_RAW" ||
+    selectedEquipment.startsWith("FD")
+        ? -90
+        : 0,
     anchor: "end",
     align: "end",
     formatter: function(value) {
@@ -2352,8 +2359,7 @@ const overviewBudgetReference =
     },
     font: {
         weight: "bold",
-        size: 13
-    }
+size: selectedEquipment === "TOTAL_KILN" ? 10 : 11    }
 },
                 tooltip: {
                     callbacks: {
@@ -2379,7 +2385,7 @@ const overviewBudgetReference =
     min: 15,
 max: selectedEquipment === "TOTAL_CEMENT" ? 140 :
      selectedEquipment === "TOTAL_RAW" ? 30 :
-     selectedEquipment === "TOTAL_COAL" ? 65 :
+     selectedEquipment === "TOTAL_COAL" ? 80 :
      selectedEquipment.startsWith("FD") ? 30 :
      selectedEquipment.startsWith("KD") ? 65 : 50,
                title: {
