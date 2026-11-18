@@ -307,7 +307,17 @@ body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > d
     height: 280px !important;
     margin-top: 8px !important;
 }
+@media (min-width: 851px) {
+    body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly {
+        height: 292px;
+        margin-top: 20px;
+        align-self: start;
+    }
 
+    body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > div {
+        height: 224px !important;
+    }
+}
 @media (max-width: 850px) {
     body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-charts {
         grid-template-columns: 1fr;
@@ -602,6 +612,61 @@ body.overview-theme #overview .metric-value {
     font-size: 36px;
     line-height: 1.1;
     font-weight: 700;
+}
+body.main-kpi-page #mainKpiOverview .metric-value {
+    font-size: 36px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+body.main-kpi-page #mainKpiOverview .metric-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.main-kpi-page #mainKpiOverview .metric-heading-row .metric-title {
+    margin-bottom: 0;
+}
+
+body.main-kpi-page #mainKpiOverview .metric-trend-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #d0e4ce;
+    color: #1c382d;
+}
+
+body.main-kpi-page #mainKpiOverview .metric-trend-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+body.main-kpi-page #mainKpiOverview .metric-budget-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #eadfce;
+    color: #1c382d;
+}
+
+body.main-kpi-page #mainKpiOverview .metric-budget-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 body.overview-theme #overview .metric-heading-row {
     display: flex;
@@ -902,13 +967,31 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
             </section>
             <section class="overview" id="mainKpiOverview" style="display: none;">
                         <div class="metric">
-            <div class="metric-title">YTD Gerçekleşme</div>
-            <div class="metric-value" id="mainKpiYtdActual">—</div>
+<div class="metric-heading-row">
+    <div class="metric-title">YTD Gerçekleşme</div>
+    <span class="metric-trend-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 7l6 6 4-4 6 6"></path>
+            <path d="M15 15h5v-5"></path>
+        </svg>
+    </span>
+</div>            <div class="metric-value" id="mainKpiYtdActual">—</div>
             <div class="muted">kWh/ton</div>
         </div>
 
         <div class="metric">
-            <div class="metric-title">YTD Bütçe</div>
+            <div class="metric-heading-row">
+    <div class="metric-title">YTD Bütçe</div>
+    <span class="metric-budget-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+            <circle cx="10" cy="14" r="8"></circle>
+            <circle cx="10" cy="14" r="5"></circle>
+            <circle cx="10" cy="14" r="2"></circle>
+            <path d="M21 3l-9.6 9.6"></path>
+            <path d="M16 3h5v5"></path>
+        </svg>
+    </span>
+</div>
             <div class="metric-value" id="mainKpiYtdBudget">—</div>
             <div class="muted">kWh/ton</div>
         </div>
@@ -921,6 +1004,7 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
   <div id="mainKpiGauge" style="width:100px; height:60px; flex-shrink:0;"></div>
 </div>
 <div class="muted">%</div>
+<div id="mainKpiScoreExplanation" class="muted"></div>
         </div>
             </section>
 <section class="panel main-kpi-chart-panel" id="mainKpiChartPanel">
@@ -1458,7 +1542,12 @@ function renderMainKpiChart() {
 
     const scoreElement = document.getElementById("mainKpiScore");
     const gauge = document.getElementById("mainKpiGauge");
+const scoreExplanationElement =
+    document.getElementById("mainKpiScoreExplanation");
 
+if (scoreExplanationElement) {
+    scoreExplanationElement.textContent = "";
+}
     if (score !== null && Number.isFinite(score)) {
         scoreElement.textContent =
             score.toLocaleString("tr-TR", {
@@ -1467,7 +1556,16 @@ function renderMainKpiChart() {
         scoreElement.style.color =
             score > 0 ? "#16a34a" :
             score < 0 ? "#eab308" : "";
+if (scoreExplanationElement) {
+    const direction =
+        data.ytd < data.budget ? "altında" :
+        data.ytd > data.budget ? "üzerinde" : "hedefinde";
 
+    scoreExplanationElement.textContent =
+        `Bütçenin %${Math.abs(score).toLocaleString("tr-TR", {
+            maximumFractionDigits: 2
+        })} ${direction}.`;
+}
         const gaugeValue = Math.max(-15, Math.min(10, score));
         const angle = 180 + ((gaugeValue + 15) / 25) * 180;
 
@@ -1601,7 +1699,7 @@ datasets: [
                         }),
                     font: {
                         weight: "bold",
-                        size: 10
+                        size: 12
                     }
                 }
             },
