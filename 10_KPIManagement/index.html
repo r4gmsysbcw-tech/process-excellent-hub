@@ -388,7 +388,114 @@ body.kpi-summary-page .summary-actions {
     gap: 16px;
     margin-bottom: 14px;
 }
+#kpiSummaryView .summary-filter-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+}
 
+#kpiSummaryView .summary-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 999px;
+    background: #edf2f6;
+}
+
+#kpiSummaryView .summary-filter-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #5b6b80;
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+#kpiSummaryView .summary-filter-button.active {
+    background: #ffffff;
+    color: #1e293b;
+    box-shadow: 0 1px 4px rgba(30, 41, 59, 0.08);
+}
+
+#kpiSummaryView .summary-filter-button span[id$="Count"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+#kpiSummaryView .summary-filter-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+#kpiSummaryView .summary-filter-dot.target {
+    background: #22a45a;
+}
+
+#kpiSummaryView .summary-filter-dot.watch {
+    background: #f5a623;
+}
+
+#kpiSummaryView .summary-filter-dot.action {
+    background: #ef4444;
+}
+
+#kpiSummaryView #summaryKpiSearch {
+    width: min(280px, 28vw);
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #d9e2ec;
+    border-radius: 16px;
+    background: #f2f5f9;
+    color: #334155;
+    font: inherit;
+}
+
+#kpiSummaryView #summaryKpiSearch:focus {
+    outline: 2px solid #b8c9dc;
+    outline-offset: 1px;
+}
+
+@media (max-width: 900px) {
+    #kpiSummaryView .summary-table-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #kpiSummaryView .summary-filter-toolbar {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    #kpiSummaryView .summary-filter-group {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    #kpiSummaryView #summaryKpiSearch {
+        width: 100%;
+    }
+}
 #kpiSummaryView .summary-table-title h2 {
     margin: 0 0 6px;
 }
@@ -737,7 +844,17 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
     <div class="app">
 
         <aside class="sidebar">
-            <h2>PROCESS EXCELLENT HUB</h2>
+<div style="display: flex; align-items: center; gap: 14px; margin-bottom: 8px;">
+    <span style="width: 50px; height: 50px; flex: 0 0 50px; display: grid; place-items: center; border-radius: 50%; background: #1f344f;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+             style="width: 24px; height: 24px; fill: none; stroke: #38bdf8; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;">
+            <path d="M4 15a8 8 0 1 1 16 0"></path>
+            <path d="M12 15l4-5"></path>
+            <circle cx="12" cy="15" r="1.2" fill="#38bdf8" stroke="none"></circle>
+        </svg>
+    </span>
+    <h2 style="margin: 0;">PROCESS EXCELLENT HUB</h2>
+</div>
             <div class="subtitle">KPI Management Center</div>
 
             <div class="menu-label">KPI MENÜSÜ</div>
@@ -1151,23 +1268,26 @@ body.overview-theme:not(.main-kpi-page):not(.kpi-summary-page) #kiln {
         <h2>KPI Performansı</h2>
         <div class="summary-muted">Pro-Target Project verilerinin özeti</div>
     </div>
-                <section class="summary-statuses summary-statuses-inline" aria-label="KPI durum özeti">
-                    <article class="summary-card summary-status-card">
-                        <div class="summary-status-icon good" aria-hidden="true">✓</div>
-                        <div>
-                            <h2>Hedef İçinde</h2>
-                            <div id="summaryTargetCount" class="summary-status-value">—</div>
-                        </div>
-                    </article>
-
-                    <article class="summary-card summary-status-card">
-                        <div class="summary-status-icon action" aria-hidden="true">!</div>
-                        <div>
-                            <h2>Aksiyon Gereken</h2>
-                            <div id="summaryActionCount" class="summary-status-value">—</div>
-                        </div>
-                    </article>
-                </section>
+<div class="summary-filter-toolbar" role="group" aria-label="KPI filtreleri">
+    <div class="summary-filter-group">
+    <button type="button" class="summary-filter-button active" data-summary-filter="all">
+        Tümü <span id="summaryAllCount">—</span>
+    </button>
+    <button type="button" class="summary-filter-button" data-summary-filter="Hedef İçinde">
+        <span class="summary-filter-dot target"></span>
+        Hedef İçinde <span id="summaryTargetCount">—</span>
+    </button>
+    <button type="button" class="summary-filter-button" data-summary-filter="İzle">
+        <span class="summary-filter-dot watch"></span>
+        İzle <span id="summaryWatchCount">—</span>
+    </button>
+    <button type="button" class="summary-filter-button" data-summary-filter="Aksiyon Gerekli">
+        <span class="summary-filter-dot action"></span>
+        Aksiyon Gereken <span id="summaryActionCount">—</span>
+    </button>
+    </div>
+    <input id="summaryKpiSearch" type="search" placeholder="KPI ara…" aria-label="KPI ara">
+</div>
 </div>
                 <div class="summary-table-wrap">
                     <table class="summary-table">
@@ -3175,8 +3295,10 @@ const comparison = actualVsBudget > 0
     tableBody.replaceChildren();
 
     let currentCategory = "";
-    let targetCount = 0;
-    let actionCount = 0;
+let totalCount = 0;
+let targetCount = 0;
+let watchCount = 0;
+let actionCount = 0;
         const excludedSummaryRows = new Set([
         "Clinker Energy K1",
         "Clinker Energy K2",
@@ -3232,11 +3354,15 @@ const displayedDeviation =
         : invertDeviationSign
             ? -Number(row.deviation)
             : row.deviation;
-        if (summaryStatus.status === "Hedef İçinde") {
-            targetCount++;
-        } else if (summaryStatus.status === "Aksiyon Gerekli") {
-            actionCount++;
-        }
+        totalCount++;
+
+if (summaryStatus.status === "Hedef İçinde") {
+    targetCount++;
+} else if (summaryStatus.status === "İzle") {
+    watchCount++;
+} else if (summaryStatus.status === "Aksiyon Gerekli") {
+    actionCount++;
+}
         const values = [
             turkishNames[row.name] || row.name,
             unit,
@@ -3294,17 +3420,111 @@ summaryStatus.status
 if (firstKpiRow) {
     firstKpiRow.click();
 }
-    const targetCountElement = document.getElementById("summaryTargetCount");
-    const actionCountElement = document.getElementById("summaryActionCount");
+const allCountElement = document.getElementById("summaryAllCount");
+const targetCountElement = document.getElementById("summaryTargetCount");
+const watchCountElement = document.getElementById("summaryWatchCount");
+const actionCountElement = document.getElementById("summaryActionCount");
 
-    if (targetCountElement) {
-        targetCountElement.textContent = String(targetCount);
+if (allCountElement) {
+    allCountElement.textContent = String(totalCount);
+}
+if (targetCountElement) {
+    targetCountElement.textContent = String(targetCount);
+}
+if (watchCountElement) {
+    watchCountElement.textContent = String(watchCount);
+}
+if (actionCountElement) {
+    actionCountElement.textContent = String(actionCount);
+    function applyKpiSummaryFilters() {
+    const tableBody = document.getElementById("summaryKpiTableBody");
+    const activeButton = document.querySelector(
+        "#kpiSummaryView .summary-filter-button.active"
+    );
+    const searchInput = document.getElementById("summaryKpiSearch");
+
+    if (!tableBody) {
+        return;
     }
 
-    if (actionCountElement) {
-        actionCountElement.textContent = String(actionCount);
+    const activeFilter = activeButton
+        ? activeButton.dataset.summaryFilter
+        : "all";
+
+    const searchText = searchInput
+        ? searchInput.value.trim().toLocaleLowerCase("tr-TR")
+        : "";
+
+    tableBody.querySelectorAll("tr.summary-group").forEach(function (groupRow) {
+        let hasVisibleKpi = false;
+        let kpiRow = groupRow.nextElementSibling;
+
+        while (kpiRow && !kpiRow.classList.contains("summary-group")) {
+            const status = kpiRow.cells[6]
+                ? kpiRow.cells[6].textContent.trim()
+                : "";
+
+            const kpiName = kpiRow.cells[0]
+                ? kpiRow.cells[0].textContent.trim().toLocaleLowerCase("tr-TR")
+                : "";
+
+            const matchesStatus =
+                activeFilter === "all" || status === activeFilter;
+            const matchesSearch =
+                searchText === "" || kpiName.includes(searchText);
+
+            kpiRow.hidden = !(matchesStatus && matchesSearch);
+
+            if (!kpiRow.hidden) {
+                hasVisibleKpi = true;
+            }
+
+            kpiRow = kpiRow.nextElementSibling;
+        }
+
+        groupRow.hidden = !hasVisibleKpi;
+    });
+
+    const selectedRow = tableBody.querySelector("tr.summary-selected");
+
+    if (selectedRow && selectedRow.hidden) {
+        const firstVisibleRow = Array.from(
+            tableBody.querySelectorAll("tr:not(.summary-group)")
+        ).find(function (row) {
+            return !row.hidden;
+        });
+
+        if (firstVisibleRow) {
+            firstVisibleRow.click();
+        }
     }
-}let kpiSummaryRows = [];
+}
+
+document.querySelectorAll(
+    "#kpiSummaryView .summary-filter-button"
+).forEach(function (button) {
+    button.addEventListener("click", function () {
+        document.querySelectorAll(
+            "#kpiSummaryView .summary-filter-button"
+        ).forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        applyKpiSummaryFilters();
+    });
+});
+
+const summaryKpiSearchInput =
+    document.getElementById("summaryKpiSearch");
+
+if (summaryKpiSearchInput) {
+    summaryKpiSearchInput.addEventListener(
+        "input",
+        applyKpiSummaryFilters
+    );
+}
+}}let kpiSummaryRows = [];
 
 const summaryReadButton = document.getElementById("summaryReadExcelButton");
 
