@@ -209,6 +209,9 @@ overflow-y: auto;
             .overview {
                 grid-template-columns: 1fr;
             }
+            body.main-kpi-page #mainKpiOverview {
+    grid-template-columns: 1fr !important;
+}
         }
 
         @media (max-width: 600px) {
@@ -216,9 +219,12 @@ overflow-y: auto;
                 display: block;
             }
 
-            .sidebar {
-                width: 100%;
-            }
+.sidebar {
+    width: 100%;
+    position: static;
+    height: auto;
+    overflow-y: visible;
+}
 
             .main {
                 padding: 16px;
@@ -318,7 +324,7 @@ body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > d
         height: 224px !important;
     }
 }
-@media (max-width: 850px) {
+@media (max-width: 1100px) {
     body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-charts {
         grid-template-columns: 1fr;
     }
@@ -326,6 +332,9 @@ body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > d
     body:not(.main-kpi-page):not(.kpi-summary-page) #kiln .overview-chart-yearly > div {
         height: 208px !important;
     }
+    #mainKpiChartPanel > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+}
 }
 /* KPI Özeti için ayrılmış görünüm */
 #kpiSummaryView {
@@ -704,9 +713,10 @@ body.kpi-summary-page .summary-actions {
 }
 
 @media (max-width: 950px) {
-    #kpiSummaryView .summary-top {
-        grid-template-columns: 1fr;
-    }
+#kpiSummaryView .summary-top {
+    grid-template-columns: 1fr;
+    position: static;
+}
 
     #kpiSummaryView .summary-statuses {
         grid-template-columns: repeat(2, minmax(0, 1fr));
